@@ -1,0 +1,12 @@
+This module will set up data structures to represent Sensor Boards, Sensor Board Data, Sensors, and Sensor Readings.  It also provides code that will parse Sensor Board Data nodes into Sensor Reading nodes.  For example, if your Sensor Board is emailing sensor data to a webserver, you can use the Mailhandler module to import those emails into Sensor Board Data nodes and the Sensor Hub module code will pars the data into Sensor Reading nodes.
+
+INSTALLATION
+
+For incoming data, make sure the string is in the following format:
+{sensor board id} {first sensor reading position}, {second sensor reading position}, {etc...}
+
+You need to prepare a Sensor Board node and a Sensor node for each sensor you have attached to your real live sensor board.  The sensor board must send over a string with its own unique identifier at the beginning of every transmission (as seen above).  As for each connected Sensor node, you must define the position in the string that the sensor board is sending over that corresponds with that sensor.
+
+CREDIT
+
+This Drupal Feature module was created by R.J. Steinert (rj@rjsteinert.com) and Dennison Williams for Mathew Lippincott's Rodent Resistent Composter project (http://www.cloacina.org/blog/2010/06/2nd-composter-finished/).
