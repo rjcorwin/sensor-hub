@@ -46,13 +46,13 @@ function shub_cron() {
 }
 
 function shub_parse_sensor_board_data($sensor_board_data=NULL) {
-  /* 
-   * parse the Sensor Board Data node
-   */
+  
   // test $data = "tempstring0 53,57,38,60,48";
   $data = "onewire 104018ef180c2:3, 104811ef18090:6, 10a14ef18059:4,
   103e23ef180bd:7, 10d13cef180a3:5";
-  $data = $sensor_board_data->body;
+  //$data = $sensor_board_data->body;
+  
+  // Get the Sesor Board node 
   $pos  = strpos($data, ' ');
   $sensor_board_id   = substr($data, 0, $pos);
   $sensor_board = shub_sensor_board_load($sensor_board_id);
@@ -60,10 +60,11 @@ function shub_parse_sensor_board_data($sensor_board_data=NULL) {
   if (!$sensor_board) {
     return 0;
   }
-  // Detect the string format:
-  // If there are colons in the string then the string contains the sensor ids 
-  // as opposed to relying on the order of the readings
+  
+  // Detect the string format
   if(strpos($data, ':') {
+    
+    // Parse the out the sensor readings
     $pos++;
     $data_cd  = substr($data , $pos, strlen($data));
     $sensor_strings = explode(',', $data_cd);
@@ -71,15 +72,26 @@ function shub_parse_sensor_board_data($sensor_board_data=NULL) {
       $arr = explode(':', $sensor_string);
       $sensor_readings[$arr[0]] = $arr[1];
     }
-    // Make sure the sensors in the readings match up with the sensors attached to
-    // the sensor board node.
+    
+    // Make sure the sensors in the readings have corresponding sensors nodes attached to the Sensor Board node
     foreach ($sensor_readings as $sensor_id => $sensor_reading_data) {
-      if($sensor_board->sensors[$sensor_id] == NULL) {
+      if(!$sensor_board->sensors[$sensor_id]) {
         // TODO This could result in a ton of repeat messages
         drupal_watchdog('Sensor Hub', "Sensor Board {$sensor_board->id} is receiving data for sensors not assigned to that Sensor Board node.");
         return 0;
       }
     }
+
+    // Give a warning if there is a Sensor node assigned to the Sensor Board node that does not have data in the sensor readings
+    foreach ($sensor_board->sensor as $sensor_id => $sensor_node) {
+      if(!$sensor_readings[$sensor_id]) {
+        drupal_watchdog('Sensor Hub', "Sensor Board {$sensor_board->id} is not receiving data for Sensor {$sensor_id}.");
+      }
+    }
+
+    
+
+    
      
   }
   else {
