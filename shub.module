@@ -16,7 +16,7 @@ function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
       break;
     case 'load':
       if ($node->type == 'sensor_board') {
-        $node->sensors = shub_get_sensor_board_sensors($node->nid);
+        $node->sensors = shub_sensor_board_sensors_load($node->nid);
       }
   }
 }
@@ -55,9 +55,9 @@ function shub_parse_sensor_board_data($sensor_board_data=NULL) {
   $data = $sensor_board_data->body;
   $pos  = strpos($data, ' ');
   $sensor_board_id   = substr($data, 0, $pos);
-  $sensor_board = shub_get_sensor_board($sensor_board_id);
+  $sensor_board = shub_sensor_board_load($sensor_board_id);
   // No Sensor Board found, no parsing this Sensor Board Data node
-  if (!$sensor_board_nid) {
+  if (!$sensor_board) {
     return 0;
   }
   // Detect the string format:
@@ -71,7 +71,15 @@ function shub_parse_sensor_board_data($sensor_board_data=NULL) {
       $arr = explode(':', $sensor_string);
       $sensor_readings[$arr[0]] = $arr[1];
     }
-    // retrieve all sensor nodes
+    // Make sure the sensors in the readings match up with the sensors attached to
+    // the sensor board node.
+    foreach ($sensor_readings as $sensor_id => $sensor_reading_data) {
+      if($sensor_board->sensors[$sensor_id] == NULL) {
+        // TODO This could result in a ton of repeat messages
+        drupal_watchdog('Sensor Hub', "Sensor Board {$sensor_board->id} is receiving data for sensors not assigned to that Sensor Board node.");
+        return 0;
+      }
+    }
      
   }
   else {
@@ -134,15 +142,18 @@ function shub_get_sensor_board($sensor_board_id) {
   return node_load($sensor_board_nid); 
 }
 
-function shub_get_sensor_board_sensors($sensor_board_nid) {
+function shub_sensor_board_sensors_load($nid = NULL, $id = NULL) {
   // Retrieve the corresponding sensor nid's matching $sensor_board_nid to
   // node_node_data_field_sensor_to_sb.nid
   // Also, grab the sensor's string position in the sensor board data string.
   // The query is a bit of a monster right now, copied from Views :P
+  if($id) {
+    // TODO add support for retrieving sensors by sensor board id
+  }
   $q = "
       SELECT node.nid AS nid, node.title AS node_title, node_data_field_sensor_data_string_pos.field_sensor_data_string_pos_value AS node_data_field_sensor_data_string_pos_field_sensor_data_string_pos_value, node.type AS node_type, node.vid AS node_vid FROM node node  LEFT JOIN content_type_sensor node_data_field_sensor_to_sb ON node.vid = node_data_field_sensor_to_sb.vid INNER JOIN node node_node_data_field_sensor_to_sb ON node_data_field_sensor_to_sb.field_sensor_to_sb_nid = node_node_data_field_sensor_to_sb.nid LEFT JOIN content_type_sensor node_data_field_sensor_data_string_pos ON node.vid = node_data_field_sensor_data_string_pos.vid WHERE (node.type in ('sensor')) AND (node_node_data_field_sensor_to_sb.nid = %s)
     ";
-  $result = db_query($q, $sensor_board_nid);
+  $result = db_query($q, $nid);
   $i = 0;
   while($sensor = db_fetch_array($result)) {
     $sensor = node_load($sensor['nid']);
