@@ -6,6 +6,7 @@ include_once('shub.features.inc');
 function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
     case 'insert':
+      
       // Catch Sensor Board Data nodes being imported by mail handler.
       if ($node->type == 'sensor_board_data' && $node->field_sb_data_process_status[0]['value'] == NULL) {
         // Protect the field_sb_data_process from being NULL in the database
@@ -13,15 +14,22 @@ function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
         // TODO get the Sensor Board ID from the string and save the relationship
         node_save($node);
       }
+      
       break;
+    
     case 'load':
+      
+      // Load sensors on sensor board nodes
       if ($node->type == 'sensor_board') {
         $node->sensors = shub_sensor_board_sensors_load($node->nid);
+        $node->id = $node->field_sensor_board_id[0]['value'];
       }
   }
 }
 
+
 function shub_cron() {
+
   // Get all Sensor Server Data nodes that are not marked as 'processed'
   $q = " 
     SELECT node.nid AS nid
@@ -34,18 +42,22 @@ function shub_cron() {
   $result = db_query($q, $sensor_server_id);
   $sensor_board_data_count = 0;
   $sensor_reading_count = 0;
+  
   // parse each node
   while($nid = db_result($result)) {
     $node = node_load($nid);
-    $sensor_reading_count += shub_parse_sensor_board_data($node);
+    $sensor_reading_count += shub_sensor_board_data_parse($node);
     $sensor_board_data_count++;
   }
+  
+  // Report activity to Drupal Log
   watchdog('SHUB ', 'Parsed ' . $sensor_board_data_count 
           . ' Sensor Board Data nodes and created ' . $sensor_reading_count
           . ' Sensor Readings nodes.');
 }
 
-function shub_parse_sensor_board_data($sensor_board_data=NULL) {
+
+function shub_sensor_board_data_parse($sensor_board_data=NULL) {
   
   // test $data = "tempstring0 53,57,38,60,48";
   $data = "onewire 104018ef180c2:3, 104811ef18090:6, 10a14ef18059:4,
@@ -56,15 +68,16 @@ function shub_parse_sensor_board_data($sensor_board_data=NULL) {
   $pos  = strpos($data, ' ');
   $sensor_board_id   = substr($data, 0, $pos);
   $sensor_board = shub_sensor_board_load($sensor_board_id);
+  
   // No Sensor Board found, no parsing this Sensor Board Data node
   if (!$sensor_board) {
     return 0;
   }
   
-  // Detect the string format
+  // Detect the string format. The string may contain unique Sensor ids or just have an ordered list of sensor reading data
   if(strpos($data, ':') {
     
-    // Parse the out the sensor readings
+    // Parse out the sensor readings
     $pos++;
     $data_cd  = substr($data , $pos, strlen($data));
     $sensor_strings = explode(',', $data_cd);
@@ -73,7 +86,7 @@ function shub_parse_sensor_board_data($sensor_board_data=NULL) {
       $sensor_readings[$arr[0]] = $arr[1];
     }
     
-    // Make sure the sensors in the readings have corresponding sensors nodes attached to the Sensor Board node
+    // Issue warning and quit if sensors in the readings do not have corresponding sensors nodes attached to the Sensor Board node
     foreach ($sensor_readings as $sensor_id => $sensor_reading_data) {
       if(!$sensor_board->sensors[$sensor_id]) {
         // TODO This could result in a ton of repeat messages
@@ -82,64 +95,59 @@ function shub_parse_sensor_board_data($sensor_board_data=NULL) {
       }
     }
 
-    // Give a warning if there is a Sensor node assigned to the Sensor Board node that does not have data in the sensor readings
+    // Issue warning if there is a Sensor node assigned to the Sensor Board node that does not have data in the sensor readings
     foreach ($sensor_board->sensor as $sensor_id => $sensor_node) {
       if(!$sensor_readings[$sensor_id]) {
         drupal_watchdog('Sensor Hub', "Sensor Board {$sensor_board->id} is not receiving data for Sensor {$sensor_id}.");
       }
     }
-
     
-
-    
-     
+    // Save each sensor reading
+    $i = 0;
+    foreach($sensor_readings as $sensor_id => $sensor_reading_data) {
+      shub_sensor_reading_save($sensor_reading_data, $sensor_id, $sensor_board, $sensor_board_data);
+      $i++;
+    }
   }
   else {
+    
+    // Parse the data
     $pos++;
     $data_cd  = substr($data , $pos, strlen($data));
     $sensor_data = explode(',', $data_cd);
-    // Retrieve the corresponding sensor nid's matching $sensor_board_nid to
-    // node_node_data_field_sensor_to_sb.nid
-    // Also, grab the sensor's string position in the sensor board data string.
-    // The query is a bit of a monster right now, copied from Views :P
-    $q = "
-        SELECT node.nid AS nid, node.title AS node_title, node_data_field_sensor_data_string_pos.field_sensor_data_string_pos_value AS node_data_field_sensor_data_string_pos_field_sensor_data_string_pos_value, node.type AS node_type, node.vid AS node_vid FROM node node  LEFT JOIN content_type_sensor node_data_field_sensor_to_sb ON node.vid = node_data_field_sensor_to_sb.vid INNER JOIN node node_node_data_field_sensor_to_sb ON node_data_field_sensor_to_sb.field_sensor_to_sb_nid = node_node_data_field_sensor_to_sb.nid LEFT JOIN content_type_sensor node_data_field_sensor_data_string_pos ON node.vid = node_data_field_sensor_data_string_pos.vid WHERE (node.type in ('sensor')) AND (node_node_data_field_sensor_to_sb.nid = %s)
-      ";
-    $result = db_query($q, $sensor_board_nid);
+    
+    // Save each sensor reading
     $i = 0;
-    while($sensor = db_fetch_array($result)) {
-      // create a new node object to save sensor reading data into
-      $sensor_reading = new stdClass();
-      $sensor_reading->type = 'sensor_reading';
-      // form the relationship from the sensor reading node to the sensor node
-      $sensor_reading->field_sensor_reading_to_sensor = array( 0 => array( 'nid' => $sensor['nid']));
-      // form the relationship from the sensor reading node to the sensor board data node
-      $sensor_reading->field_sensor_reading_to_sb_data = array( 0 => array( 'nid' => $sensor_board_data->nid));
-      // form the relationship from the sensor reading node to the sensor board node
-      $sensor_reading->field_sensor_reading_to_sb = array( 0 => array( 'nid' => $sensor_board_nid));
-      // save the sensor data from the Sensor Server Data
-      $sensor_reading->body = $sensor_data[$sensor['node_data_field_sensor_data_string_pos_field_sensor_data_string_pos_value']];
-      // set the time correctly on the reading as it actually happened in the past
-      $sensor_reading->created = $sensor_board_data->created;
-      // set the owner
-      $sensor_reading->uid = $sensor_board_data->uid;
-      // give the Sensor Reading a title
-      $sensor_reading->title = $sensor_board_id . ":" . $sensor['node_title'] . ":"
-        . $sensor_reading->body . ':' . $sensor_board_data->created;// . $sensor_reading->
-      // save the new Sensor Reading
-      node_save($sensor_reading);
+    foreach($sensor_readings as $sensor_order => $sensor_reading_data) {
+      
+      // Find the sensor id for this ordered reading
+      foreach $sensor_board->sensor as $this_sensor_id => $sensor) {
+        if($sensor->field_order = $sensor_order) {
+          $sensor_id = $this_sensor_id;
+        }
+      }
+      
+      // Save the reading
+      shub_sensor_reading_save($sensor_reading_data, $sensor_id, $sensor_board, $sensor_board_data);
       $i++;
     }
-    // Give this Sensor Board Data node its relationship to its Sensor Board
-    $sensor_board_data->field_sb_data_to_sb = array( 0 => array('nid' => $sensor_board_nid));
-    // Mark this Sensor Server Data node as processed
-    $sensor_board_data->field_sb_data_process_status = array( 0 => array( 'value' => 'processed'));
-    node_save($sensor_board_data);
-    // Return the amount of sensor reading nodes created
-    return $i;
+  }
+
+  // Give this Sensor Board Data node its relationship to its Sensor Board
+  $sensor_board_data->field_sb_data_to_sb = array( 0 => array('nid' => $sensor_board->nid));
+  
+  // Mark this Sensor Server Data node as processed
+  $sensor_board_data->field_sb_data_process_status = array( 0 => array( 'value' => 'processed'));
+  
+  node_save($sensor_board_data);
+  
+  // Return the number of sensor reading nodes saved
+  return $i;
 }
 
-function shub_get_sensor_board($sensor_board_id) {
+
+function shub_sensor_board_load($sensor_board_id) {
+
   // Retrieve the corresponding sensor_board node by matching $sensor_board_id
   // to field_sensor_board_id
   $q = " 
@@ -154,7 +162,35 @@ function shub_get_sensor_board($sensor_board_id) {
   return node_load($sensor_board_nid); 
 }
 
+
+function shub_sensor_reading_save($data, $sensor_id, $sensor_board, $sensor_board_data = NULL) {
+  
+  // create a new node object to save sensor reading data into
+  $sensor_reading = new stdClass();
+  $sensor_reading->type = 'sensor_reading';
+  // form the relationship from the sensor reading node to the sensor node
+  $sensor_reading->field_sensor_reading_to_sensor = array( 0 => array( 'nid' => $sensor_board->sensor[$sensor_id]->nid));
+  // form the relationship from the sensor reading node to the sensor board data node
+  $sensor_reading->field_sensor_reading_to_sb_data = array( 0 => array( 'nid' => $sensor_board_data->nid));
+  // form the relationship from the sensor reading node to the sensor board node
+  $sensor_reading->field_sensor_reading_to_sb = array( 0 => array( 'nid' => $sensor_board->nid));
+  // save the sensor data from the Sensor Server Data
+  $sensor_reading->body = $data;
+  // set the time correctly on the reading as it actually happened in the past
+  $sensor_reading->created = $sensor_board_data->created;
+  // set the owner
+  $sensor_reading->uid = $sensor_board_data->uid;
+  // give the Sensor Reading a title
+  $sensor_reading->title = $sensor_board->id . ":" . $sensor_board->sensor[$sensor_id]->title . ":"
+    . $data . ':' . $sensor_board_data->created;// . $sensor_reading->
+  // save the new Sensor Reading
+  node_save($sensor_reading); 
+
+}
+
+
 function shub_sensor_board_sensors_load($nid = NULL, $id = NULL) {
+  
   // Retrieve the corresponding sensor nid's matching $sensor_board_nid to
   // node_node_data_field_sensor_to_sb.nid
   // Also, grab the sensor's string position in the sensor board data string.
