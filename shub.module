@@ -75,7 +75,7 @@ function shub_sensor_board_data_parse($sensor_board_data=NULL) {
   }
   
   // Detect the string format. The string may contain unique Sensor ids or just have an ordered list of sensor reading data
-  if(strpos($data, ':') {
+  if(strpos($data, ':')) {
     
     // Parse out the sensor readings
     $pos++;
@@ -121,8 +121,8 @@ function shub_sensor_board_data_parse($sensor_board_data=NULL) {
     foreach($sensor_readings as $sensor_order => $sensor_reading_data) {
       
       // Find the sensor id for this ordered reading
-      foreach $sensor_board->sensor as $this_sensor_id => $sensor) {
-        if($sensor->field_order = $sensor_order) {
+      foreach ($sensor_board->sensor as $this_sensor_id => $sensor) {
+        if($sensor->field_order == $sensor_order) {
           $sensor_id = $this_sensor_id;
         }
       }
