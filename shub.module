@@ -2,31 +2,53 @@
 
 include_once('shub.features.inc');
 
-
+/*
+ * hook_nodeapi()
+ */
 function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
+
     case 'insert':
-      
-      // Catch Sensor Board Data nodes being imported by mail handler.
-      if ($node->type == 'sensor_board_data' && $node->field_sb_data_process_status[0]['value'] == NULL) {
-        // Protect the field_sb_data_process from being NULL in the database
-        $node->field_sb_data_process_status = array( 0 => array( 'value' => 'not processed'));
-        // TODO get the Sensor Board ID from the string and save the relationship
-        node_save($node);
+
+      switch ($node->type) {
+
+        case "sensor_board_data" :
+          // Catch Sensor Board Data nodes being imported by mail handler.
+          if ($node->field_sb_data_process_status[0]['value'] == NULL) {
+            // Mailhandler saves field_sb_data_process as NULL. Set to 'not processed'.
+            $node->field_sb_data_process_status = array( 0 => array( 'value' => 'not processed'));
+            // TODO get the Sensor Board ID from the string and save the relationship
+            node_save($node);
+          }
       }
-      
-      break;
-    
+
     case 'load':
-      
-      // Load sensors on sensor board nodes
-      if ($node->type == 'sensor_board') {
-        $node->sensors = shub_sensor_board_sensors_load($node->nid);
-        $node->id = $node->field_sensor_board_id[0]['value'];
+
+      switch($node->type) {
+
+        case 'sensor_board':
+          $node->id = $node->field_sb_id[0]['value'];
+          $node->sensors = shub_sensor_board_sensors_load($node->nid);
+
+        case 'sensor' :
+          $node->id = $node->field_sensor_id[0]['value'];
+
+        case 'sensor_board_data' :
+          // TODO Add a link to process the node. In the field_sb_data_process_status
+          // is a likely candidate.
+
       }
   }
 }
 
+/*
+ * TODO validate Sensor Board node form, field_sb_id should be unique
+ */
+
+
+/*
+ * hook_cron()
+ */
 
 function shub_cron() {
 
@@ -46,7 +68,7 @@ function shub_cron() {
   // parse each node
   while($nid = db_result($result)) {
     $node = node_load($nid);
-    $sensor_reading_count += shub_sensor_board_data_parse($node);
+    $sensor_reading_count += shub_sensor_board_data_process($node);
     $sensor_board_data_count++;
   }
   
@@ -57,7 +79,7 @@ function shub_cron() {
 }
 
 
-function shub_sensor_board_data_parse($sensor_board_data=NULL) {
+function shub_sensor_board_data_process($sensor_board_data=NULL) {
   
   // test $data = "tempstring0 53,57,38,60,48";
   $data = "onewire 104018ef180c2:3, 104811ef18090:6, 10a14ef18059:4,
@@ -191,21 +213,24 @@ function shub_sensor_reading_save($data, $sensor_id, $sensor_board, $sensor_boar
 
 function shub_sensor_board_sensors_load($nid = NULL, $id = NULL) {
   
+  if($id) {
+    // Load the sensor board node, which will trigger this function with $nid
+    // parameter, and then return the sensors.
+    $sensor_board = shub_sensor_board_load($id);
+    return $sensor_board->sensors;
+  }
+
   // Retrieve the corresponding sensor nid's matching $sensor_board_nid to
   // node_node_data_field_sensor_to_sb.nid
   // Also, grab the sensor's string position in the sensor board data string.
   // The query is a bit of a monster right now, copied from Views :P
-  if($id) {
-    // TODO add support for retrieving sensors by sensor board id
-  }
   $q = "
       SELECT node.nid AS nid, node.title AS node_title, node_data_field_sensor_data_string_pos.field_sensor_data_string_pos_value AS node_data_field_sensor_data_string_pos_field_sensor_data_string_pos_value, node.type AS node_type, node.vid AS node_vid FROM node node  LEFT JOIN content_type_sensor node_data_field_sensor_to_sb ON node.vid = node_data_field_sensor_to_sb.vid INNER JOIN node node_node_data_field_sensor_to_sb ON node_data_field_sensor_to_sb.field_sensor_to_sb_nid = node_node_data_field_sensor_to_sb.nid LEFT JOIN content_type_sensor node_data_field_sensor_data_string_pos ON node.vid = node_data_field_sensor_data_string_pos.vid WHERE (node.type in ('sensor')) AND (node_node_data_field_sensor_to_sb.nid = %s)
     ";
   $result = db_query($q, $nid);
-  $i = 0;
-  while($sensor = db_fetch_array($result)) {
+  while($sensor = db_fetch_array($result) ) {
     $sensor = node_load($sensor['nid']);
-    $sensors[$sensor->field_sensor_id] = $sensor;
+    $sensors[$sensor->id] = $sensor;
   }
   return $sensors;
 }
