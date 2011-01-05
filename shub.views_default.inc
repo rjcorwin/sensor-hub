@@ -146,6 +146,61 @@ function shub_views_default_views() {
       'field' => 'field_sensor_reading_to_sensor_nid',
       'relationship' => 'none',
     ),
+    'timemode_datapoint' => array(
+      'label' => 'Timemode Data point',
+      'alter' => array(
+        'alter_text' => FALSE,
+        'text' => '',
+        'make_link' => FALSE,
+        'path' => '',
+        'alt' => '',
+        'link_class' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'trim' => FALSE,
+        'max_length' => '',
+        'word_boundary' => TRUE,
+        'ellipsis' => TRUE,
+        'strip_tags' => FALSE,
+        'html' => FALSE,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'series' => array(
+        'field' => 'node.created',
+      ),
+      'value' => array(
+        'field' => 'node_revisions.body',
+      ),
+      'exclude' => 0,
+      'id' => 'timemode_datapoint',
+      'table' => 'views',
+      'field' => 'timemode_datapoint',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('filters', array(
+    'type' => array(
+      'operator' => 'in',
+      'value' => array(
+        'sensor_reading' => 'sensor_reading',
+      ),
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'type',
+      'table' => 'node',
+      'field' => 'type',
+      'relationship' => 'none',
+    ),
   ));
   $handler->override_option('access', array(
     'type' => 'none',
@@ -153,7 +208,7 @@ function shub_views_default_views() {
   $handler->override_option('cache', array(
     'type' => 'none',
   ));
-  $handler->override_option('items_per_page', 100);
+  $handler->override_option('items_per_page', 300);
   $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'table');
   $handler->override_option('style_options', array(
@@ -197,6 +252,41 @@ function shub_views_default_views() {
     'description' => '',
     'weight' => 0,
     'name' => 'navigation',
+  ));
+  $handler = $view->new_display('attachment', 'Attachment', 'attachment_1');
+  $handler->override_option('style_plugin', 'flot_timemode');
+  $handler->override_option('style_options', array(
+    'type' => 'point',
+    'size' => '500x400',
+    'x' => array(
+      'label' => 'default',
+      'granularity' => 'auto',
+    ),
+    'y' => array(
+      'label' => 'default',
+      'granularity' => 'auto',
+      'pad' => 1,
+      'custom-y-max' => '',
+      'custom-y-min' => '',
+    ),
+    'colors' => array(
+      '0' => '#666',
+      '1' => '#999',
+      '2' => '#ccc',
+    ),
+    'layers' => array(
+      'r:default' => 0,
+      'r:page_1' => 0,
+    ),
+  ));
+  $handler->override_option('attachment_position', 'before');
+  $handler->override_option('inherit_arguments', TRUE);
+  $handler->override_option('inherit_exposed_filters', FALSE);
+  $handler->override_option('inherit_pager', FALSE);
+  $handler->override_option('render_pager', TRUE);
+  $handler->override_option('displays', array(
+    'page_1' => 'page_1',
+    'default' => 0,
   ));
 
   $views[$view->name] = $view;
@@ -403,6 +493,13 @@ function shub_views_default_views() {
       'relationship' => 'none',
     ),
   ));
+  $handler->override_option('arguments', array(
+    'nid' => array(
+      'id' => 'nid',
+      'table' => 'node',
+      'field' => 'nid',
+    ),
+  ));
   $handler->override_option('filters', array(
     'type' => array(
       'operator' => 'in',
@@ -467,7 +564,6 @@ function shub_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('empty_format', '1');
-  $handler->override_option('items_per_page', 50);
   $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'table');
   $handler->override_option('style_options', array(
@@ -588,13 +684,13 @@ function shub_views_default_views() {
   $handler->override_option('default_argument', '');
   $handler = $view->new_display('node_content', 'table_attach_to_sensor_boards', 'node_content_2');
   $handler->override_option('relationships', array(
-    'field_sensor_reading_to_ss_nid' => array(
-      'label' => 'Sensor Server',
-      'required' => 0,
+    'field_sensor_reading_to_sb_nid' => array(
+      'label' => 'Sensor Board',
+      'required' => 1,
       'delta' => -1,
-      'id' => 'field_sensor_reading_to_ss_nid',
-      'table' => 'node_data_field_sensor_reading_to_ss',
-      'field' => 'field_sensor_reading_to_ss_nid',
+      'id' => 'field_sensor_reading_to_sb_nid',
+      'table' => 'node_data_field_sensor_reading_to_sb',
+      'field' => 'field_sensor_reading_to_sb_nid',
       'override' => array(
         'button' => 'Use default',
       ),
@@ -627,16 +723,18 @@ function shub_views_default_views() {
       'override' => array(
         'button' => 'Use default',
       ),
-      'relationship' => 'field_sensor_reading_to_ss_nid',
+      'relationship' => 'field_sensor_reading_to_sb_nid',
       'default_options_div_prefix' => '',
       'default_argument_fixed' => '',
       'default_argument_user' => 0,
       'default_argument_php' => '',
       'validate_argument_node_type' => array(
+        'example_node_type_1' => 0,
+        'example_node_type_2' => 0,
         'sensor' => 0,
+        'sensor_board' => 0,
+        'sensor_board_data' => 0,
         'sensor_reading' => 0,
-        'sensor_server' => 0,
-        'sensor_server_data' => 0,
         'page' => 0,
         'story' => 0,
       ),
@@ -1900,6 +1998,100 @@ function shub_views_default_views() {
     'block_1' => 0,
     'page_2' => 0,
   ));
+  $handler = $view->new_display('node_content', 'table_attach_to_sensor_board_data', 'node_content_3');
+  $handler->override_option('relationships', array(
+    'field_sensor_reading_to_sb_data_nid' => array(
+      'label' => 'Sensor Board Data origin',
+      'required' => 1,
+      'delta' => -1,
+      'id' => 'field_sensor_reading_to_sb_data_nid',
+      'table' => 'node_data_field_sensor_reading_to_sb_data',
+      'field' => 'field_sensor_reading_to_sb_data_nid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('arguments', array(
+    'nid' => array(
+      'default_action' => 'ignore',
+      'style_plugin' => 'default_summary',
+      'style_options' => array(),
+      'wildcard' => 'all',
+      'wildcard_substitution' => 'All',
+      'title' => '',
+      'breadcrumb' => '',
+      'default_argument_type' => 'fixed',
+      'default_argument' => '',
+      'validate_type' => 'none',
+      'validate_fail' => 'not found',
+      'break_phrase' => 0,
+      'not' => 0,
+      'id' => 'nid',
+      'table' => 'node',
+      'field' => 'nid',
+      'validate_user_argument_type' => 'uid',
+      'validate_user_roles' => array(
+        '2' => 0,
+        '3' => 0,
+      ),
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_sensor_reading_to_sb_data_nid',
+      'default_options_div_prefix' => '',
+      'default_argument_fixed' => '',
+      'default_argument_user' => 0,
+      'default_argument_php' => '',
+      'validate_argument_node_type' => array(
+        'example_node_type_1' => 0,
+        'example_node_type_2' => 0,
+        'sensor' => 0,
+        'sensor_board' => 0,
+        'sensor_board_data' => 0,
+        'sensor_reading' => 0,
+        'page' => 0,
+        'story' => 0,
+      ),
+      'validate_argument_node_access' => 0,
+      'validate_argument_nid_type' => 'nid',
+      'validate_argument_vocabulary' => array(),
+      'validate_argument_type' => 'tid',
+      'validate_argument_transform' => 0,
+      'validate_user_restrict_roles' => 0,
+      'validate_argument_php' => '',
+    ),
+  ));
+  $handler->override_option('filters', array(
+    'type' => array(
+      'operator' => 'in',
+      'value' => array(
+        'sensor_reading' => 'sensor_reading',
+      ),
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'type',
+      'table' => 'node',
+      'field' => 'type',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('types', array(
+    'sensor_board_data' => 'sensor_board_data',
+  ));
+  $handler->override_option('modes', array(
+    '0' => 'full',
+  ));
+  $handler->override_option('argument_mode', 'nid');
+  $handler->override_option('default_argument', '');
 
   $views[$view->name] = $view;
 

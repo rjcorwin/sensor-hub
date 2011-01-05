@@ -35,7 +35,10 @@ function shub_init() {
 /*
  * hook_nodeapi()
  * TODO Currently the node hooks for our custom content types are not being
- * called so we're forced to call them in hook_nodeapi
+ * called when we set the content type declartions' module parameter correctly
+ * so we're forced to call them in hook_nodeapi().  This may be because of our
+ * tie to the Features module.  When doing a features-update on shub it will
+ * overwrite the content types' module parameters.
  */
 function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {

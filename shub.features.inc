@@ -17,7 +17,7 @@ function shub_node_info() {
   $items = array(
     'sensor' => array(
       'name' => t('Sensor'),
-      'module' => 'shub_sensor',
+      'module' => 'features',
       'description' => '',
       'has_title' => '1',
       'title_label' => t('Name'),
@@ -28,10 +28,10 @@ function shub_node_info() {
     ),
     'sensor_board' => array(
       'name' => t('Sensor Board'),
-      'module' => 'shub_sensor_board',
+      'module' => 'features',
       'description' => '',
       'has_title' => '1',
-      'title_label' => t('Name'),
+      'title_label' => t('Label'),
       'has_body' => '1',
       'body_label' => t('Description'),
       'min_word_count' => '0',
@@ -39,7 +39,7 @@ function shub_node_info() {
     ),
     'sensor_board_data' => array(
       'name' => t('Sensor Board Data'),
-      'module' => 'shub_sensor_board_data',
+      'module' => 'features',
       'description' => '',
       'has_title' => '1',
       'title_label' => t('Title'),
@@ -50,7 +50,7 @@ function shub_node_info() {
     ),
     'sensor_reading' => array(
       'name' => t('Sensor Reading'),
-      'module' => 'shub_sensor_reading',
+      'module' => 'features',
       'description' => '',
       'has_title' => '1',
       'title_label' => t('Title'),

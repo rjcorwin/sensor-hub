@@ -276,6 +276,23 @@ function shub_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'content_extra_weights_sensor_board';
+  $strongarm->value = array(
+    'title' => '-5',
+    'body_field' => '-2',
+    'revision_information' => '1',
+    'author' => '2',
+    'options' => '3',
+    'comment_settings' => '4',
+    'menu' => '-4',
+    'sensor_readings_node_content_2' => '-1',
+    'sensors_attached_to_sensor_board_node_content_1' => '5',
+  );
+
+  $export['content_extra_weights_sensor_board'] = $strongarm;
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'content_extra_weights_sensor_board_data';
   $strongarm->value = array(
     'title' => '-5',
