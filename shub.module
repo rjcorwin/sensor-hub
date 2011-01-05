@@ -20,6 +20,9 @@ function shub_init() {
   if(is_numeric($_GET['sensor_board_data_process'])) {
     $sensor_board_data = node_load($_GET['sensor_board_data_process']);
     shub_sensor_board_data_process($sensor_board_data);
+    // Reset the node_load cache for this sensor board data because it has been
+    // updated.
+    node_load($_GET['sensor_board_data_process'], NULL, TRUE);
   }
   // Process all sensor board data nodes related to this sensor board
   if(is_numeric($_GET['sensor_board_process'])) {
@@ -119,6 +122,8 @@ function shub_sensor_board_load($node) {
 function shub_sensor_board_view($node, $teaser = FALSE, $page = FALSE) {
   if(arg(1) == $node->nid) {
     $path =  ltrim(request_uri(), '/');
+    // TODO Remove the sensor_board_process parameter if present
+    // otherwise the url breaks
     $link = l(t('Process all data for this Sensor Board'), $path,
       array('query' => array('sensor_board_process' => $node->nid)));
     $node->content['sensor_board_process_link'] = array(
@@ -153,6 +158,7 @@ function shub_sensor_board_load_by_id($sensor_board_id) {
 }
 
 /*
+ * hook_validate()
  * Validate Sensor Board node form, field_sb_id should be unique.
  *
  * TODO
@@ -164,8 +170,6 @@ function shub_sensor_board_validate($node, &$form) {
 /*
  * Find all Sensor Board Data nodes not processed for this Sensor Board and process
  * them.
- *
- * TODO
  */
 function shub_sensor_board_process($sensor_board) {
 
@@ -304,10 +308,7 @@ function shub_sensor_board_data_process($sensor_board_data=NULL) {
         }
         else {
           // TODO This could result in a ton of repeat messages
-          watchdog('Sensor Hub',
-            $message,
-            WATCHDOG_WARNING
-          );
+          watchdog('Sensor Hub', $message, WATCHDOG_WARNING);
         }
         return 0;
       }
@@ -381,7 +382,7 @@ function shub_sensor_reading_save($data, $sensor_id, $sensor_board, $sensor_boar
   $sensor_reading = new stdClass();
   $sensor_reading->type = 'sensor_reading';
   // form the relationship from the sensor reading node to the sensor node
-  $sensor_reading->field_sensor_reading_to_sensor = array( 0 => array( 'nid' => $sensor_board->sensor[$sensor_id]->nid));
+  $sensor_reading->field_sensor_reading_to_sensor = array( 0 => array( 'nid' => $sensor_board->sensors[$sensor_id]->nid));
   // form the relationship from the sensor reading node to the sensor board data node
   $sensor_reading->field_sensor_reading_to_sb_data = array( 0 => array( 'nid' => $sensor_board_data->nid));
   // form the relationship from the sensor reading node to the sensor board node
