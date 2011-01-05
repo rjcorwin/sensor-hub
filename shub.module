@@ -84,16 +84,21 @@ function shub_cron() {
   // parse each node
   while($nid = db_result($result)) {
     $sensor_board_data = node_load($nid);
-    $sensor_board = node_load($sensor_board_data->sb_data_to_sb[0]['nid']);
-    // Parse only if marked to do so on the associated sensor board
-    if ($sensor_board->field_process_on_cron[0] == TRUE) {
-      $sensor_reading_count += shub_sensor_board_data_process($node);
-      $sensor_board_data_count++;
+    if($sensor_board = node_load($sensor_board_data->field_sb_data_to_sb[0]['nid'])) {
+      // Parse only if marked to do so on the associated sensor board
+      if ($sensor_board->field_process_on_cron[0]['value'] == "enabled") {
+        $sensor_reading_count += shub_sensor_board_data_process($sensor_board_data);
+        $sensor_board_data_count++;
+      }
+    }
+    else {
+      watchdog('Sensor Hub', "Sensor Board Data with nid of $sensor_board_data->nid does
+              not have an associated Sensor Board");
     }
   }
   
   // Report activity to Drupal Log
-  watchdog("Sensor Hub", 'SHUB ', 'Parsed ' . $sensor_board_data_count
+  watchdog("Sensor Hub", 'On cron job, SHUB ' . ' parsed ' . $sensor_board_data_count
           . ' Sensor Board Data nodes and created ' . $sensor_reading_count
           . ' Sensor Readings nodes.');
 }
@@ -306,7 +311,7 @@ function shub_sensor_board_data_process($sensor_board_data=NULL) {
         }
         else {
           // TODO This could result in a ton of repeat messages
-          watchdog('Sensor Hub', $message, WATCHDOG_WARNING);
+          watchdog('Sensor Hub', $message);
         }
         return 0;
       }
@@ -315,7 +320,7 @@ function shub_sensor_board_data_process($sensor_board_data=NULL) {
     // Issue warning if there is a Sensor node assigned to the Sensor Board node that does not have data in the sensor readings
     foreach ($sensor_board->sensors as $sensor_id => $sensor_node) {
       if(!$sensor_readings[$sensor_id]) {
-        drupal_watchdog('Sensor Hub', "Sensor Board {$sensor_board->id} is not receiving data for Sensor {$sensor_id}.");
+        watchdog('Sensor Hub', "Sensor Board {$sensor_board->id} is not receiving data for Sensor {$sensor_id}.");
       }
     }
 
