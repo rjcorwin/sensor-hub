@@ -279,14 +279,14 @@ function shub_strongarm() {
   $strongarm->name = 'content_extra_weights_sensor_board';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '-2',
+    'body_field' => '-4',
     'revision_information' => '1',
     'author' => '2',
-    'options' => '3',
-    'comment_settings' => '4',
-    'menu' => '-4',
+    'options' => '4',
+    'comment_settings' => '5',
+    'menu' => '3',
     'sensor_readings_node_content_2' => '-1',
-    'sensors_attached_to_sensor_board_node_content_1' => '5',
+    'sensors_attached_to_sensor_board_node_content_1' => '-2',
   );
 
   $export['content_extra_weights_sensor_board'] = $strongarm;

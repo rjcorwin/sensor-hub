@@ -12,24 +12,51 @@ function shub_quicktabs_default_quicktabs() {
   $quicktabs->ajax = 0;
   $quicktabs->hide_empty_tabs = 0;
   $quicktabs->default_tab = FALSE;
-  $quicktabs->title = 'Sensor Board Views Tabs';
+  $quicktabs->title = 'Sensor Board Tabs';
   $quicktabs->tabs = array(
     0 => array(
-      'vid' => 'shub_sensor_board_data',
-      'display' => 'block_1',
+      'vid' => 'shub_sensor_readings',
+      'display' => 'block_2',
       'args' => '',
       'get_displays' => 'vdisp_0',
-      'title' => 'Data Not Processed',
+      'title' => 'Graph of Sensor Readings',
       'weight' => '-100',
       'type' => 'view',
     ),
     1 => array(
+      'vid' => 'shub_sensor_readings',
+      'display' => 'block_1',
+      'args' => '',
+      'get_displays' => 'vdisp_1',
+      'title' => 'Sensor Readings',
+      'weight' => '-99',
+      'type' => 'view',
+    ),
+    2 => array(
+      'vid' => 'shub_sensor_board_data',
+      'display' => 'block_1',
+      'args' => '',
+      'get_displays' => 'vdisp_2',
+      'title' => 'Data Not Processed',
+      'weight' => '-98',
+      'type' => 'view',
+    ),
+    3 => array(
       'vid' => 'shub_sensor_board_data',
       'display' => 'block_2',
       'args' => '',
-      'get_displays' => 'vdisp_1',
+      'get_displays' => 'vdisp_3',
       'title' => 'Data Processed',
-      'weight' => '-99',
+      'weight' => '-97',
+      'type' => 'view',
+    ),
+    4 => array(
+      'vid' => 'sensors_attached_to_sensor_board',
+      'display' => 'block_1',
+      'args' => '',
+      'get_displays' => 'vdisp_4',
+      'title' => 'Attached Sensors',
+      'weight' => '-96',
       'type' => 'view',
     ),
   );

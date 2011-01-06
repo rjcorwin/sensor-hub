@@ -682,81 +682,6 @@ function shub_views_default_views() {
   ));
   $handler->override_option('argument_mode', 'nid');
   $handler->override_option('default_argument', '');
-  $handler = $view->new_display('node_content', 'table_attach_to_sensor_boards', 'node_content_2');
-  $handler->override_option('relationships', array(
-    'field_sensor_reading_to_sb_nid' => array(
-      'label' => 'Sensor Board',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_reading_to_sb_nid',
-      'table' => 'node_data_field_sensor_reading_to_sb',
-      'field' => 'field_sensor_reading_to_sb_nid',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'ignore',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'fixed',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'field_sensor_reading_to_sb_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('empty', 'No Sensor Readings found for this Sensor Server.');
-  $handler->override_option('types', array(
-    'sensor_board' => 'sensor_board',
-  ));
-  $handler->override_option('modes', array(
-    '0' => 'full',
-  ));
-  $handler->override_option('argument_mode', 'nid');
-  $handler->override_option('default_argument', '');
-  $handler->override_option('show_title', 1);
   $handler = $view->new_display('block', 'flot_block', 'block_1');
   $handler->override_option('fields', array(
     'body' => array(
@@ -1991,12 +1916,13 @@ function shub_views_default_views() {
   $handler->override_option('inherit_pager', FALSE);
   $handler->override_option('render_pager', 0);
   $handler->override_option('displays', array(
-    'node_content_2' => 'node_content_2',
     'default' => 0,
     'page_1' => 0,
     'node_content_1' => 0,
+    'node_content_2' => 0,
     'block_1' => 0,
     'page_2' => 0,
+    'node_content_3' => 0,
   ));
   $handler = $view->new_display('node_content', 'table_attach_to_sensor_board_data', 'node_content_3');
   $handler->override_option('relationships', array(
