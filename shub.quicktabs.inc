@@ -51,7 +51,7 @@ function shub_quicktabs_default_quicktabs() {
       'type' => 'view',
     ),
     4 => array(
-      'vid' => 'sensors_attached_to_sensor_board',
+      'vid' => 'shub_sensors',
       'display' => 'block_1',
       'args' => '',
       'get_displays' => 'vdisp_4',
