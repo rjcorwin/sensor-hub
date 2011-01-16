@@ -80,12 +80,6 @@ function shub_context_default_contexts() {
           'region' => 'content',
           'weight' => 0,
         ),
-        'views-shub_sensor_readings-block_4' => array(
-          'module' => 'views',
-          'delta' => 'shub_sensor_readings-block_4',
-          'region' => 'content',
-          'weight' => 1,
-        ),
       ),
     ),
   );

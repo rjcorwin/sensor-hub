@@ -913,49 +913,9 @@ function shub_views_default_views() {
   ));
   $handler->override_option('arguments', array(
     'nid' => array(
-      'default_action' => 'empty',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'fixed',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
       'id' => 'nid',
       'table' => 'node',
       'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'relationship' => 'none',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
     ),
   ));
   $handler->override_option('filters', array(
@@ -978,30 +938,37 @@ function shub_views_default_views() {
       ),
       'relationship' => 'none',
     ),
-    'created' => array(
+    'date_filter' => array(
       'operator' => 'between',
       'value' => array(
-        'type' => 'offset',
-        'value' => '',
-        'min' => '-30 days',
-        'max' => 'now',
+        'value' => NULL,
+        'min' => NULL,
+        'max' => NULL,
+        'default_date' => '-30 days',
+        'default_to_date' => 'now',
       ),
       'group' => '0',
       'exposed' => TRUE,
       'expose' => array(
         'use_operator' => 0,
-        'operator' => 'created_op',
-        'identifier' => 'created',
-        'label' => 'Node: Post date',
+        'operator' => 'date_filter_op',
+        'identifier' => 'date_filter',
+        'label' => 'Data between:',
         'optional' => 1,
         'remember' => 0,
       ),
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'override' => array(
-        'button' => 'Override',
+      'date_fields' => array(
+        'node.created' => 'node.created',
       ),
+      'date_method' => 'OR',
+      'granularity' => 'minute',
+      'form_type' => 'date_popup',
+      'default_date' => '-30 days',
+      'default_to_date' => 'now',
+      'year_range' => '-3:+3',
+      'id' => 'date_filter',
+      'table' => 'node',
+      'field' => 'date_filter',
       'relationship' => 'none',
     ),
   ));
@@ -1011,6 +978,7 @@ function shub_views_default_views() {
   $handler->override_option('cache', array(
     'type' => 'none',
   ));
+  $handler->override_option('empty', 'No readings found.');
   $handler->override_option('empty_format', '1');
   $handler->override_option('use_ajax', TRUE);
   $handler->override_option('items_per_page', 6);
@@ -1255,7 +1223,7 @@ function shub_views_default_views() {
       'validate_argument_php' => '',
     ),
   ));
-  $handler->override_option('items_per_page', 0);
+  $handler->override_option('items_per_page', 100);
   $handler->override_option('style_plugin', 'flot_timemode');
   $handler->override_option('style_options', array(
     'type' => 'point',
@@ -1335,10 +1303,214 @@ function shub_views_default_views() {
   ));
   $handler->override_option('block_description', '');
   $handler->override_option('block_caching', -1);
-  $handler = $view->new_display('page', 'page_sensor_readings_all', 'page_1');
+  $handler = $view->new_display('page', 'page_flot_sensor_readings_all', 'page_1');
   $handler->override_option('relationships', array());
+  $handler->override_option('fields', array(
+    'body' => array(
+      'label' => 'Temperature',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => 'node/%1',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'exclude' => 0,
+      'id' => 'body',
+      'table' => 'node_revisions',
+      'field' => 'body',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'field_sensor_reading_to_sensor_nid' => array(
+      'label' => 'Sensor reference by Sensor Node ID',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'widget',
+      'format' => 'default',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
+      ),
+      'exclude' => 0,
+      'id' => 'field_sensor_reading_to_sensor_nid',
+      'table' => 'node_data_field_sensor_reading_to_sensor',
+      'field' => 'field_sensor_reading_to_sensor_nid',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'created' => array(
+      'label' => 'Post date',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'date_format' => 'small',
+      'custom_date_format' => '',
+      'exclude' => 0,
+      'id' => 'created',
+      'table' => 'node',
+      'field' => 'created',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'view_node' => array(
+      'label' => 'Link',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'text' => '',
+      'exclude' => 0,
+      'id' => 'view_node',
+      'table' => 'node',
+      'field' => 'view_node',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'timemode_datapoint' => array(
+      'label' => 'Timemode Data point',
+      'alter' => array(
+        'alter_text' => FALSE,
+        'text' => '',
+        'make_link' => FALSE,
+        'path' => '',
+        'alt' => '',
+        'link_class' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'trim' => FALSE,
+        'max_length' => '',
+        'word_boundary' => TRUE,
+        'ellipsis' => TRUE,
+        'strip_tags' => FALSE,
+        'html' => FALSE,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'series' => array(
+        'field' => 'node.created',
+      ),
+      'value' => array(
+        'field' => 'node_revisions.body',
+      ),
+      'exclude' => 0,
+      'id' => 'timemode_datapoint',
+      'table' => 'views',
+      'field' => 'timemode_datapoint',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
   $handler->override_option('arguments', array());
-  $handler->override_option('items_per_page', 60);
+  $handler->override_option('title', 'All Sensor Readings');
+  $handler->override_option('items_per_page', 100);
+  $handler->override_option('style_plugin', 'flot_timemode');
+  $handler->override_option('style_options', array(
+    'type' => 'point',
+    'size' => '400x200',
+    'x' => array(
+      'label' => 'default',
+    ),
+    'y' => array(
+      'label' => 'default',
+      'pad' => 1,
+      'custom-y-max' => '',
+      'custom-y-min' => '',
+    ),
+    'colors' => array(
+      '0' => '#666',
+      '1' => '#999',
+      '2' => '#ccc',
+    ),
+    'layers' => array(
+      'shub_sensor_readings:block_2' => 0,
+      'shub_sensor_readings:block_5' => 0,
+      'shub_sensor_readings:node_content_1' => 0,
+    ),
+  ));
   $handler->override_option('path', 'sensor-readings');
   $handler->override_option('menu', array(
     'type' => 'none',
@@ -1670,7 +1842,7 @@ function shub_views_default_views() {
       ),
     ),
   ));
-  $handler->override_option('items_per_page', 0);
+  $handler->override_option('items_per_page', 100);
   $handler->override_option('style_plugin', 'flot_timemode');
   $handler->override_option('style_options', array(
     'type' => 'point',
@@ -1698,6 +1870,179 @@ function shub_views_default_views() {
   ));
   $handler->override_option('block_description', '');
   $handler->override_option('block_caching', -1);
+  $handler = $view->new_display('attachment', 'attachment_table_sensor_readings_all', 'attachment_1');
+  $handler->override_option('relationships', array());
+  $handler->override_option('arguments', array());
+  $handler->override_option('items_per_page', 100);
+  $handler->override_option('attachment_position', 'after');
+  $handler->override_option('inherit_arguments', TRUE);
+  $handler->override_option('inherit_exposed_filters', 1);
+  $handler->override_option('inherit_pager', 1);
+  $handler->override_option('render_pager', TRUE);
+  $handler->override_option('displays', array(
+    'page_1' => 'page_1',
+    'default' => 0,
+    'block_2' => 0,
+    'block_1' => 0,
+    'block_3' => 0,
+    'block_4' => 0,
+    'block_5' => 0,
+    'node_content_1' => 0,
+  ));
+  $handler = $view->new_display('attachment', 'attachment_table_sensor_readings_for_sensor_board', 'attachment_2');
+  $handler->override_option('relationships', array(
+    'field_sensor_reading_to_sb_nid' => array(
+      'label' => 'Sensor Board',
+      'required' => 1,
+      'delta' => -1,
+      'id' => 'field_sensor_reading_to_sb_nid',
+      'table' => 'node_data_field_sensor_reading_to_sb',
+      'field' => 'field_sensor_reading_to_sb_nid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('arguments', array(
+    'nid' => array(
+      'default_action' => 'default',
+      'style_plugin' => 'default_summary',
+      'style_options' => array(),
+      'wildcard' => 'all',
+      'wildcard_substitution' => 'All',
+      'title' => '',
+      'breadcrumb' => '',
+      'default_argument_type' => 'node',
+      'default_argument' => '',
+      'validate_type' => 'none',
+      'validate_fail' => 'not found',
+      'break_phrase' => 0,
+      'not' => 0,
+      'id' => 'nid',
+      'table' => 'node',
+      'field' => 'nid',
+      'validate_user_argument_type' => 'uid',
+      'validate_user_roles' => array(
+        '2' => 0,
+      ),
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_sensor_reading_to_sb_nid',
+      'default_options_div_prefix' => '',
+      'default_argument_fixed' => '',
+      'default_argument_user' => 0,
+      'default_argument_php' => '',
+      'validate_argument_node_type' => array(
+        'sensor' => 0,
+        'sensor_board' => 0,
+        'sensor_board_data' => 0,
+        'sensor_reading' => 0,
+        'page' => 0,
+        'story' => 0,
+      ),
+      'validate_argument_node_access' => 0,
+      'validate_argument_nid_type' => 'nid',
+      'validate_argument_vocabulary' => array(),
+      'validate_argument_type' => 'tid',
+      'validate_argument_transform' => 0,
+      'validate_user_restrict_roles' => 0,
+      'validate_argument_php' => '',
+    ),
+  ));
+  $handler->override_option('items_per_page', 100);
+  $handler->override_option('attachment_position', 'after');
+  $handler->override_option('inherit_arguments', TRUE);
+  $handler->override_option('inherit_exposed_filters', 1);
+  $handler->override_option('inherit_pager', 1);
+  $handler->override_option('render_pager', TRUE);
+  $handler->override_option('displays', array(
+    'block_2' => 'block_2',
+    'default' => 0,
+    'block_1' => 0,
+    'page_1' => 0,
+    'block_3' => 0,
+    'block_4' => 0,
+    'block_5' => 0,
+  ));
+  $handler = $view->new_display('attachment', 'attachment_table_sensor_readings_for_sensor', 'attachment_3');
+  $handler->override_option('relationships', array(
+    'field_sensor_reading_to_sensor_nid' => array(
+      'label' => 'Sensor reference by Sensor Node ID',
+      'required' => 1,
+      'delta' => -1,
+      'id' => 'field_sensor_reading_to_sensor_nid',
+      'table' => 'node_data_field_sensor_reading_to_sensor',
+      'field' => 'field_sensor_reading_to_sensor_nid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('arguments', array(
+    'nid' => array(
+      'default_action' => 'default',
+      'style_plugin' => 'default_summary',
+      'style_options' => array(),
+      'wildcard' => 'all',
+      'wildcard_substitution' => 'All',
+      'title' => '',
+      'breadcrumb' => '',
+      'default_argument_type' => 'node',
+      'default_argument' => '',
+      'validate_type' => 'none',
+      'validate_fail' => 'not found',
+      'break_phrase' => 0,
+      'not' => 0,
+      'id' => 'nid',
+      'table' => 'node',
+      'field' => 'nid',
+      'validate_user_argument_type' => 'uid',
+      'validate_user_roles' => array(
+        '2' => 0,
+      ),
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_sensor_reading_to_sensor_nid',
+      'default_options_div_prefix' => '',
+      'default_argument_fixed' => '',
+      'default_argument_user' => 0,
+      'default_argument_php' => '',
+      'validate_argument_node_type' => array(
+        'sensor' => 0,
+        'sensor_board' => 0,
+        'sensor_board_data' => 0,
+        'sensor_reading' => 0,
+        'page' => 0,
+        'story' => 0,
+      ),
+      'validate_argument_node_access' => 0,
+      'validate_argument_nid_type' => 'nid',
+      'validate_argument_vocabulary' => array(),
+      'validate_argument_type' => 'tid',
+      'validate_argument_transform' => 0,
+      'validate_user_restrict_roles' => 0,
+      'validate_argument_php' => '',
+    ),
+  ));
+  $handler->override_option('items_per_page', 100);
+  $handler->override_option('attachment_position', 'after');
+  $handler->override_option('inherit_arguments', TRUE);
+  $handler->override_option('inherit_exposed_filters', 1);
+  $handler->override_option('inherit_pager', 1);
+  $handler->override_option('render_pager', TRUE);
+  $handler->override_option('displays', array(
+    'block_5' => 'block_5',
+    'default' => 0,
+    'block_2' => 0,
+    'block_1' => 0,
+    'page_1' => 0,
+    'block_3' => 0,
+    'block_4' => 0,
+  ));
 
   $views[$view->name] = $view;
 
@@ -1830,6 +2175,8 @@ function shub_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('title', 'Sensors Connected');
+  $handler->override_option('empty', 'No sensors found. <a href="/node/add/sensor">Add a sensor</a>.');
+  $handler->override_option('empty_format', '3');
   $handler->override_option('style_plugin', 'table');
   $handler = $view->new_display('block', 'block_sensors_attached_to_sensor_board', 'block_1');
   $handler->override_option('block_description', '');
