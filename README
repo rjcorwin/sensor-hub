@@ -1,5 +1,7 @@
 This module will set up data structures to represent Sensor Boards, Sensor Board Data, Sensors, and Sensor Readings.  It also provides code that will parse Sensor Board Data nodes into Sensor Reading nodes.  For example, if your Sensor Board is emailing sensor data to a webserver, you can use the Mailhandler module to import those emails into Sensor Board Data nodes and the Sensor Hub module code will pars the data into Sensor Reading nodes.
 
+For the most recent documentation, see http://www.sensorhub.org/wiki
+
 INSTALLATION
 
 For incoming data, make sure the string is in the following format:
