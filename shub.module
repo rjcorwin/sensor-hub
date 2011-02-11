@@ -235,8 +235,18 @@ function shub_sensor_board_data_insert($node) {
   // Catch Sensor Board Data nodes being imported by mail handler.
   if ($node->field_sb_data_to_sb[0]['nid'] == NULL) {
     // Get the Sensor Board node
-    $pos  = strpos($node->body, ' ');
+    // Check for DATE in string, in which case we look for a comma to
+    // find the ID.  This is obviously ugly :P and will be fixed when
+    // we have a Feeds integration and parsing plugin is configurable per 
+    // sensor board.
+    if(!$has_date = strpos($node->body, 'DATE')) { 
+      $pos  = strpos($node->body, ' ');
+    }
+    else {
+      $pos  = strpos($node->body, ',');
+    }
     $sensor_board_id   = substr($node->body, 0, $pos);
+    dpm($sensor_board_id);
     if($sensor_board = shub_sensor_board_load_by_id($sensor_board_id)) {
       $node->field_sb_data_to_sb[0]['nid'] = $sensor_board->nid;
     }
@@ -244,7 +254,7 @@ function shub_sensor_board_data_insert($node) {
       // TODO Alert the user they have Sensor Board Data being imported with no
       // Parent Sensor Board.  This may be triggered on CRON so using drupal_set_message()
       // is not appropriate.  Using watchdog() assumes user has admin access. Email the user?
-    }
+    
   }
   if ($node->field_sb_data_process_status[0]['value'] == NULL) {
     // Mailhandler saves field_sb_data_process as NULL. Set to 'not processed'.
