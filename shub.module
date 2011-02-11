@@ -254,7 +254,7 @@ function shub_sensor_board_data_insert($node) {
       // TODO Alert the user they have Sensor Board Data being imported with no
       // Parent Sensor Board.  This may be triggered on CRON so using drupal_set_message()
       // is not appropriate.  Using watchdog() assumes user has admin access. Email the user?
-    
+    } 
   }
   if ($node->field_sb_data_process_status[0]['value'] == NULL) {
     // Mailhandler saves field_sb_data_process as NULL. Set to 'not processed'.
