@@ -8,6 +8,29 @@
  */
 
 include_once('shub.features.inc');
+include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorReadingsProcessor.inc');
+include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorBoardDataOnSensorBoardFetcher.inc');
+include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorBoardDataTravistaParser.inc');
+
+/*
+ * Temporary function until finished implementing Feeds.
+ * Find all Sensor Board Data nodes not processed for this Sensor Board and process
+ * them.
+ */
+function shub_feed_on_sensor_board__sb_data_to_sensor_readings__execute($sensor_board) {
+
+  // Fetcher
+  $sensor_board_data_fetched = shub_feed_on_sensor_board__sb_data_to_sensor_readings__fetch($sensor_board);
+
+  // Parser
+  $sensor_readings = shub_feed_on_sensor_board__sb_data_to_sensor_readings__parse($sensor_board_data_fetched);
+
+  //Processor
+  shub_feed_on_sensor_board__sb_data_to_sensor_readings__process($sensor_readings);
+
+   //drupal_set_message("Sensor Hub parsed $sensor_board_data_count Sensor Board
+   //         Data nodes and created $sensor_reading_count Sensor Readings nodes.");
+}
 
 /*
  * hook_init()
@@ -16,18 +39,10 @@ include_once('shub.features.inc');
  * TODO Check permissions
  */
 function shub_init() {
-  // Process the sensor board data node if told to do so
-  if(is_numeric($_GET['sensor_board_data_process'])) {
-    $sensor_board_data = node_load($_GET['sensor_board_data_process']);
-    shub_sensor_board_data_process($sensor_board_data);
-    // Reset the node_load cache for this sensor board data because it has been
-    // updated.
-    node_load($_GET['sensor_board_data_process'], NULL, TRUE);
-  }
   // Process all sensor board data nodes related to this sensor board
   if(is_numeric($_GET['sensor_board_process'])) {
     if($sensor_board = node_load($_GET['sensor_board_process'])) {
-      shub_sensor_board_process($sensor_board);
+      shub_feed_on_sensor_board__sb_data_to_sensor_readings__execute($sensor_board);
     }
   }
 }
@@ -69,7 +84,6 @@ function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
 /*
  * hook_cron
  */
-
 function shub_cron() {
   // Get all Sensor Server Data nodes that are not marked as 'processed'
   $q = " 
@@ -106,12 +120,12 @@ function shub_cron() {
           . ' Sensor Readings nodes.');
 }
 
+
 /****************************************************************
  * Sensor Board functions
  *
- * hook_load, hook_view, load_by_id, process, hook_validate, sensors_attached
+ * hook_load, hook_view, load_by_id, hook_validate, sensors_attached
  */
-
 
 /*
  * hook_load() for Sensor Boards
@@ -120,7 +134,7 @@ function shub_sensor_board_load($node) {
   $node->id = $node->field_sb_id[0]['value'];
   // Attach function required because relationships maintained in CCK are saved by assigning
   // Sensor node to Sensor Board node. Is there contrib that reverse lookup and attach for us?
-  $node->sensors = shub_sensor_board_sensors_attached($node->nid);
+  $node->sensors = shub_sensor_board_get_sensors($node->nid);
   // Add the "Process data for this Sensor Board" link
 }
 
@@ -142,7 +156,7 @@ function shub_sensor_board_view($node, $teaser = FALSE, $page = FALSE) {
 }
 
 /*
- * Load a Sensor Board node using the Sensor Board's ID
+ * Sensor Board Load By ID: Load a Sensor Board node using the Sensor Board's ID
  */
 function shub_sensor_board_load_by_id($sensor_board_id) {
   // Retrieve the corresponding sensor_board node by matching $sensor_board_id
@@ -161,108 +175,24 @@ function shub_sensor_board_load_by_id($sensor_board_id) {
     return node_load($sensor_board_nid);
   }
   else {
-    drupal_set_message("Could not find Sensor Board with ID {$sensor_board_id}");
+    drupal_set_message("Could nokskt find Sensor Board with ID {$sensor_board_id}");
   }
 }
 
 /*
+ * Sensor Board Validate
  * hook_validate()
- * Validate Sensor Board node form, field_sb_id should be unique.
  *
- * TODO
+ * TODO Validate Sensor Board node form, field_sb_id should be unique.
  */
 function shub_sensor_board_validate($node, &$form) {
   
 }
 
 /*
- * Find all Sensor Board Data nodes not processed for this Sensor Board and process
- * them.
- */
-function shub_feed_on_sensor_board__sb_data_to_sensor_readings__execute($sensor_board) {
-
-  $data = $sensor_board_data->body;
-
-  //
-  // Fetcher
-  //
-
-  $sensor_board_data_fetched = shub_feed_on_sensor_board__sb_data_to_sensor_readings__fetch($sensor_board);
-
-
-  //
-  // Parser
-  //
-
-
-  $sensor_board_data_parsed = shub_feed_on_sensor_board__sb_data_to_sensor_readings__parse($sensor_board_data_fetched);
-  if (!$sensor_readings = shub_datetime_reading_to_array($data)) {
-    drupal_set_message("Cancelled parsing of Sensor Board Data with Node ID: $sensor_board_data->nid.
-            Reason: The Sensor Board Data node does not have a related Sensor Board node.");
-  }
-
-  //
-  //Processor
-  //
-
-  //   Check to see if this reading has sensors corresponding to what we have set up in the database for this sensor board
-  if(!shub_sensor_board_config_check($sensor_board, $sensors_readings)) {
-    drupal_set_message("Cancelled parsing of Sensor Board Data with Node ID: $sensor_board_data->nid.", "error");
-    return 0;
-  }
-
-
-
-  if($_GET['sensor_board_data_process'] == $sensor_board_data->nid) {
-    drupal_set_message("This Sensor Board Data node '{$sensor_board_data->title}' has been processed.", 'status');
-  }
-
-  drupal_set_message("Sensor Hub parsed $sensor_board_data_count Sensor Board
-          Data nodes and created $sensor_reading_count Sensor Readings nodes.");
-
-}
-
-function shub_feed_on_sensor_board__sb_data_to_sensor_readings__fetch($sensor_board) {
-
-  // Get all Sensor Board Data nodes for this Sensor Board that are not marked as
-  // processed.
-  $query = "SELECT node.nid AS nid, node_revisions.body AS node_revisions_body, node_revisions.format AS node_revisions_format, node.created AS node_created, node.uid AS node_uid, node.type AS node_type FROM node node  LEFT JOIN content_type_sensor_board_data node_data_field_sb_data_to_sb ON node.vid = node_data_field_sb_data_to_sb.vid INNER JOIN node node_node_data_field_sb_data_to_sb ON node_data_field_sb_data_to_sb.field_sb_data_to_sb_nid = node_node_data_field_sb_data_to_sb.nid LEFT JOIN content_type_sensor_board_data node_data_field_sb_data_process_status ON node.vid = node_data_field_sb_data_process_status.vid LEFT JOIN node_revisions node_revisions ON node.vid = node_revisions.vid WHERE (node.type in ('sensor_board_data')) AND ((node_data_field_sb_data_process_status.field_sb_data_process_status_value) = ('not processed')) AND (node_node_data_field_sb_data_to_sb.nid = %d)";
-  $result = db_query($query, $sensor_board->nid);
-
-  // Put each
-  while($sensor_board_data = db_fetch_array($result) ) {
-    $sensor_board_data = node_load($sensor_board_data['nid']);
-    $sensor_board_data->sensor_board = $sensor_board;
-    // Mark this Sensor Server Data node as processed. Will be reversed later if Parsing fails.
-    $sensor_board_data->field_sb_data_process_status = array( 0 => array( 'value' => 'processed'));
-    node_save($sensor_board_data);
-    $sensor_board_data_fetched[] = $sensor_board_data;
-  }
-  
-  return $sensor_board_data_fetched;
-}
-
-function shub_feed_on_sensor_board__sb_data_to_sensor_readings__parse($sensor_board_data_fetched) {
-
-
-}
-
-function shub_feed_on_sensor_board__sb_data_to_sensor_readings__process($sensor_readings) {
-
-  // Save each sensor reading
-  $reading_count = 0;
-  foreach($sensor_readings as $sensor_id => $sensor_reading_data) {
-    shub_sensor_reading_save($sensor_reading_data, $sensor_id, $date, $time, $sensor_board, $sensor_board_data);
-    $reading_count++;
-  }
-
-
-
-}
-/*
  * Return all sensors attached to a Sensor Board node
  */
-function shub_sensor_board_sensors_attached($nid = NULL, $id = NULL) {
+function shub_sensor_board_get_sensors($nid = NULL, $id = NULL) {
 
   if($id) {
     // Load the sensor board node, which will trigger this function with $nid
@@ -289,12 +219,12 @@ function shub_sensor_board_sensors_attached($nid = NULL, $id = NULL) {
 /****************************************************************
  * Sensor Board Data functions
  *
- * hook_insert, hook_view, process
+ * hook_insert, hook_view
  */
 
 function shub_sensor_board_data_insert($node) {
   // Catch Sensor Board Data nodes being imported by mail handler.
-  if ($node->field_sb_data_to_sb[0]['nid'] == NULL) {
+  if (!$node->field_sb_data_to_sb[0]['nid']) {
     // Get the Sensor Board node
     // Check for DATE in string, in which case we look for a comma to
     // find the ID.  This is obviously ugly :P and will be fixed when
@@ -325,9 +255,8 @@ function shub_sensor_board_data_insert($node) {
 }
 
 /*
- * hook_view
+ * hook_node_view
  */
-
 function shub_sensor_board_data_view($node, $teaser = FALSE, $page = FALSE) {
   // Add the "Process this Sensor Board Data" link
   if($node->field_sb_data_process_status[0]['value'] == 'not processed') {
@@ -341,132 +270,6 @@ function shub_sensor_board_data_view($node, $teaser = FALSE, $page = FALSE) {
   }
 }
 
-/*
- * Parse a Sensor Board Data node and save resulting Sensor Reading nodes.
- * TODO This is failing, returning false results
- */
-
-function shub_sensor_board_data_process($sensor_board_data=NULL) {
-
-  $data = $sensor_board_data->body;
-
-  //
-  // Fetcher
-  //
-  
-  // Get the related Sensor Board node
-  if (!$sensor_board_data->sensor_board = node_load($sensor_board_data->field_sb_data_to_sb[0]['nid'])) {
-    drupal_set_message("Cancelled parsing of Sensor Board Data with Node ID: $sensor_board_data->nid.
-            Reason: The Sensor Board Data node does not have a related Sensor Board node.");
-    return 0;
-  }
-
-  //
-  // Parser
-  //
-
-  if (!$sensor_readings = shub_datetime_reading_to_array($data)) {
-    drupal_set_message("Cancelled parsing of Sensor Board Data with Node ID: $sensor_board_data->nid.
-            Reason: The Sensor Board Data node does not have a related Sensor Board node.");
-  }
-
-  //
-  //Processor
-  //
-  
-  //   Check to see if this reading has sensors corresponding to what we have set up in the database for this sensor board
-  if(!shub_sensor_board_config_check($sensor_board, $sensors_readings)) {
-    drupal_set_message("Cancelled parsing of Sensor Board Data with Node ID: $sensor_board_data->nid.", "error");
-    return 0;
-  }
-
-  // Save each sensor reading
-  $reading_count = 0;
-  foreach($sensor_readings as $sensor_id => $sensor_reading_data) {
-    shub_sensor_reading_save($sensor_reading_data, $sensor_id, $date, $time, $sensor_board, $sensor_board_data);
-    $reading_count++;
-  }
-
-  // Give this Sensor Board Data node its relationship to its Sensor Board if it's not already there
-  $sensor_board_data->field_sb_data_to_sb = array( 0 => array('nid' => $sensor_board->nid));
-
-  // Mark this Sensor Server Data node as processed
-  $sensor_board_data->field_sb_data_process_status = array( 0 => array( 'value' => 'processed'));
-
-  node_save($sensor_board_data);
-
-  if($_GET['sensor_board_data_process'] == $sensor_board_data->nid) {
-    drupal_set_message("This Sensor Board Data node '{$sensor_board_data->title}' has been processed.", 'status');
-  }
-
-  // Return the number of sensor reading nodes saved
-  return $reading_count;
-}
-
-/*
- * Helper function to make sure the the Sensor Readings match the assigned sensors on the Sensor Board
- */
-function shub_sensor_board_config_check($sensor_board, $sensor_readings) {
-  // Issue warning and quit if sensors in the readings do not have corresponding sensors nodes attached to the Sensor Board node
-  foreach ($sensor_readings as $sensor_id => $sensor_reading_data) {
-    if(!$sensor_board->sensors[$sensor_id]) {
-      $message = "Sensor Board {$sensor_board->id} is receiving data for sensor $sensor_id which is not assigned
-          to that Sensor Board node.";
-      if ($_GET['sensor_board_data_process'] == $sensor_board_data->nid) {
-        drupal_set_message($message);
-      }
-      else {
-        // TODO This could result in a ton of repeat messages
-        watchdog('Sensor Hub', $message);
-      }
-      return FALSE;
-    }
-    return TRUE;
-  }
-  // Issue warning if there is a Sensor node assigned to the Sensor Board node that does not have data in the sensor readings
-  foreach ($sensor_board->sensors as $sensor_id => $sensor_node) {
-    if(!$sensor_readings[$sensor_id]) {
-      watchdog('Sensor Hub', "Sensor Board {$sensor_board->id} is not receiving data for Sensor {$sensor_id}.");
-    }
-  }
-  return TRUE; 
-
-
-}
-
-function shub_datetime_reading_to_array($data) {
-  // Make sure this is the format we support
-  if(!$pos = strpos($data, 'DATE')) {
-    return "Reason: The data in the Sensor Board Data does not have the DATE identifier: $data";
-
-  // Get the date and time from the reading
-  $date  = substr($data, $pos+5, 10);
-  $time  = substr($data, $pos+16, 8);
-  $datetime = new DateTime($date . "T" . $time . "Z", new DateTimeZone(date_default_timezone_name()));
-  $timestamp = $datetime->format('U');
-  if(!$timestamp)
-    return "Reason: Cannot find the date/time in the Sensor Board Data node data: $data";
-
-  // Parse out the sensor readings
-  $pos = $pos + 25;
-  $sensor_readings_string  = substr($data , $pos, strlen($data));
-  $sensor_reading_strings = explode(',', $sensor_readings_string);
-  if(!is_array($sensor_reading_strigs))
-    return "Reason: The data in the Sensor Board Data does not appear to be comma delimited: $data";
-
-  // place each reading in an array
-  foreach ($sensor_reading_strings as $sensor_string) {
-    $arr = explode(':', $sensor_string);
-    if(!is_array($arr))
-      return "Reason: A reading in the Sensor Board Data does not appear to be formed correctly : $data";
-    $sensor_readings[] = array("sensor" => ltrim($arr[0]), "data" => $arr[1], "timestamp" => $timestamp);
-  }
-
-
-  return $sensor_readings;
-}
-
-
 /****************************************************************
  * Sensor Reading functions
  *
@@ -476,24 +279,23 @@ function shub_datetime_reading_to_array($data) {
 /*
  * Save a Sensor Reading node
  */
-function shub_sensor_reading_save($reading, $sensor_board, $sensor_board_data = NULL) {
+function shub_sensor_reading_save($data, $sensor_id, $timestamp, $sensor_board_id) {
   // create a new node object to save sensor reading data into
+  $sensor_board = shub_sensor_board_load_by_id($sensor_board_id);
   $sensor_reading = new stdClass();
   $sensor_reading->type = 'sensor_reading';
   // form the relationship from the sensor reading node to the sensor node
   $sensor_reading->field_sensor_reading_to_sensor = array( 0 => array( 'nid' => $sensor_board->sensors[$sensor_id]->nid));
-  // form the relationship from the sensor reading node to the sensor board data node
-  $sensor_reading->field_sensor_reading_to_sb_data = array( 0 => array( 'nid' => $sensor_board_data->nid));
   // form the relationship from the sensor reading node to the sensor board node
   $sensor_reading->field_sensor_reading_to_sb = array( 0 => array( 'nid' => $sensor_board->nid));
   // save the sensor data from the Sensor Server Data
   $sensor_reading->body = $data;
   $sensor_reading->created = $timestamp;
   // set the owner
-  $sensor_reading->uid = $sensor_board_data->uid;
+  $sensor_reading->uid = $sensor_board->uid;
   // give the Sensor Reading a title
   $sensor_reading->title = $sensor_board->id . ":" . $sensor_board->sensor[$sensor_id]->title . ":"
-    . $data . ':' . $sensor_board_data->created;// . $sensor_reading->
+    . $timestamp . ':' . $data;// . $sensor_reading->
   // save the new Sensor Reading
   node_save($sensor_reading); 
 
