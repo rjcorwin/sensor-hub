@@ -8,9 +8,11 @@
  */
 
 include_once('shub.features.inc');
+/*
 include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorReadingsProcessor.inc');
 include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorBoardDataOnSensorBoardFetcher.inc');
 include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorBoardDataTravistaParser.inc');
+*/
 
 /*
  * Temporary function until finished implementing Feeds.
@@ -30,6 +32,34 @@ function shub_feed_on_sensor_board__sb_data_to_sensor_readings__execute($sensor_
 
    //drupal_set_message("Sensor Hub parsed $sensor_board_data_count Sensor Board
    //         Data nodes and created $sensor_reading_count Sensor Readings nodes.");
+}
+
+/**
+ * Implementation of hook_feeds_plugins().
+ */
+function shub_feeds_plugins() {
+  $info = array();
+  $info['FeedsSensorBoardDataTravistaParser'] = array(
+    'name' => 'Sensor Board Data in Travista format Parser',
+    'description' => 'Parses data in the Travista format.',
+    'handler' => array(
+      'parent' => 'FeedsParser', // A plugin needs to derive either directly or indirectly from FeedsFetcher, FeedsParser or FeedsProcessor.
+      'class' => 'FeedsSensorBoardDataTravistaParser',
+      'file' => 'FeedsSensorBoardDataTravistaParser.inc',
+      'path' => drupal_get_path('module', 'shub') . "/feeds_plugins",
+    ),
+  );
+  $info['FeedsSensorBoardDataOnSensorBoardFetcher'] = array(
+    'name' => 'Sensor Board Data On Sensor Board Fetcher',
+    'description' => 'Fetches all unprocessed Sensor Board Data',
+    'handler' => array(
+      'parent' => 'FeedsFetcher', // A plugin needs to derive either directly or indirectly from FeedsFetcher, FeedsParser or FeedsProcessor.
+      'class' => 'FeedsSensorBoardDataOnSensorBoardFetcher',
+      'file' => 'FeedsSensorBoardDataOnSensorBoardFetcher.inc',
+      'path' => drupal_get_path('module', 'shub') . "/feeds_plugins",
+    ),
+  );
+  return $info;
 }
 
 /*
