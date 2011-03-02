@@ -70,6 +70,7 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
 
       // Find Sensors in our data not attached to the Sensor Board
       foreach ($sensor_readings_temp as $sensor_reading) {
+        $sensor_reading['sensor_id'] = strtoupper($sensor_reading['sensor_id']);
         if(!$sensor_board->sensors[$sensor_reading['sensor_id']]) {
           $unmatched_sensors[] = $sensor_reading['sensor_id'];
         }
@@ -78,7 +79,7 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
       // Issue warning if there are unmatched sensors and skip this Sensor Board Data node
       if ($unmatched_sensors) {
         drupal_set_message("Sensor Board {$sensor_board->id} is receiving data for sensors which is not assigned
-              to that Sensor Board node: " . implode(',', $unmatched_sensors));
+              to that Sensor Board node: " . implode(', ', $unmatched_sensors));
         unset($unmatched_sensors);
         continue;
       }

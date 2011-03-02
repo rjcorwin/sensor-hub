@@ -8,31 +8,6 @@
  */
 
 include_once('shub.features.inc');
-/*
-include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorReadingsProcessor.inc');
-include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorBoardDataOnSensorBoardFetcher.inc');
-include_once(drupal_get_path("module", "shub") .  '/feeds_plugins/FeedsSensorBoardDataTravistaParser.inc');
-*/
-
-/*
- * Temporary function until finished implementing Feeds.
- * Find all Sensor Board Data nodes not processed for this Sensor Board and process
- * them.
- */
-function shub_feed_on_sensor_board__sb_data_to_sensor_readings__execute($sensor_board) {
-
-  // Fetcher
-  $sensor_board_data_fetched = shub_feed_on_sensor_board__sb_data_to_sensor_readings__fetch($sensor_board);
-
-  // Parser
-  $sensor_readings = shub_feed_on_sensor_board__sb_data_to_sensor_readings__parse($sensor_board_data_fetched);
-
-  //Processor
-  shub_feed_on_sensor_board__sb_data_to_sensor_readings__process($sensor_readings);
-
-   //drupal_set_message("Sensor Hub parsed $sensor_board_data_count Sensor Board
-   //         Data nodes and created $sensor_reading_count Sensor Readings nodes.");
-}
 
 /**
  * Implementation of hook_feeds_plugins().
@@ -60,21 +35,6 @@ function shub_feeds_plugins() {
     ),
   );
   return $info;
-}
-
-/*
- * hook_init()
- *
- * Check for Sensor Hub triggers
- * TODO Check permissions
- */
-function shub_init() {
-  // Process all sensor board data nodes related to this sensor board
-  if(is_numeric($_GET['sensor_board_process'])) {
-    if($sensor_board = node_load($_GET['sensor_board_process'])) {
-      shub_feed_on_sensor_board__sb_data_to_sensor_readings__execute($sensor_board);
-    }
-  }
 }
 
 /*
@@ -165,24 +125,13 @@ function shub_sensor_board_load($node) {
   // Attach function required because relationships maintained in CCK are saved by assigning
   // Sensor node to Sensor Board node. Is there contrib that reverse lookup and attach for us?
   $node->sensors = shub_sensor_board_get_sensors($node->nid);
-  // Add the "Process data for this Sensor Board" link
 }
 
 /*
  * hook_view() for Sensor Boards
  */
 function shub_sensor_board_view($node, $teaser = FALSE, $page = FALSE) {
-  if(arg(1) == $node->nid) {
-    $path =  ltrim(request_uri(), '/');
-    // TODO Remove the sensor_board_process parameter if present
-    // otherwise the url breaks
-    $link = l(t('Process all data for this Sensor Board'), $path,
-      array('query' => array('sensor_board_process' => $node->nid)));
-    $node->content['sensor_board_process_link'] = array(
-       '#value' => $link,
-       '#weight' => -2
-    );
-  }
+
 }
 
 /*
@@ -236,8 +185,7 @@ function shub_sensor_board_get_sensors($nid = NULL, $id = NULL) {
   // Also, grab the sensor's string position in the sensor board data string.
   // The query is a bit of a monster right now, copied from Views :P
   $q = "
-      SELECT node.nid AS nid, node.title AS node_title, node_data_field_sensor_data_string_pos.field_sensor_data_string_pos_value AS node_data_field_sensor_data_string_pos_field_sensor_data_string_pos_value, node.type AS node_type, node.vid AS node_vid FROM node node  LEFT JOIN content_type_sensor node_data_field_sensor_to_sb ON node.vid = node_data_field_sensor_to_sb.vid INNER JOIN node node_node_data_field_sensor_to_sb ON node_data_field_sensor_to_sb.field_sensor_to_sb_nid = node_node_data_field_sensor_to_sb.nid LEFT JOIN content_type_sensor node_data_field_sensor_data_string_pos ON node.vid = node_data_field_sensor_data_string_pos.vid WHERE (node.type in ('sensor')) AND (node_node_data_field_sensor_to_sb.nid = %s)
-    ";
+    SELECT node.title AS node_title, node.nid AS nid, node_data_field_sensor_to_sb.field_sensor_to_sb_nid AS node_data_field_sensor_to_sb_field_sensor_to_sb_nid, node.type AS node_type, node.vid AS node_vid FROM node node  LEFT JOIN content_type_sensor node_data_field_sensor_to_sb ON node.vid = node_data_field_sensor_to_sb.vid INNER JOIN node node_node_data_field_sensor_to_sb ON node_data_field_sensor_to_sb.field_sensor_to_sb_nid = node_node_data_field_sensor_to_sb.nid WHERE (node.type in ('sensor')) AND (node_node_data_field_sensor_to_sb.nid = %s)";
   $result = db_query($q, $nid);
   while($sensor = db_fetch_array($result) ) {
     $sensor = node_load($sensor['nid']);
