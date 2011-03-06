@@ -53,34 +53,37 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
 
       // Place each reading in a temporary array
       foreach ($sensor_reading_strings as $sensor_string) {
+        
         $arr = explode(':', $sensor_string);
+        
         // Make sure this is an array or skip this Sensor Board Data node
         if(!is_array($arr)) {
           return "Reason: A reading in the Sensor Board Data does not appear to be formed correctly : $data";
           continue 2;
         }
+        
         $sensor_readings_temp[] = array(
-            "sensor_id" => ltrim($arr[0]),
-            "sensor_nid" => $sensor_board->sensors[ltrim($arr[0])]->nid,
-            "sensor_data" => $arr[1],
-            "timestamp" => $timestamp,
-            "sensor_board_nid" => $sensor_board->nid,
-            "sensor_board_id" => $sensor_board->id);
-      }
-
-      // Find Sensors in our data not attached to the Sensor Board
-      foreach ($sensor_readings_temp as $sensor_reading) {
-        $sensor_reading['sensor_id'] = strtoupper($sensor_reading['sensor_id']);
-        if(!$sensor_board->sensors[$sensor_reading['sensor_id']]) {
-          $unmatched_sensors[] = $sensor_reading['sensor_id'];
+          "sensor_id" => ltrim($arr[0]),
+          "sensor_nid" => $sensor_board->sensors[ltrim($arr[0])]->nid,
+          "sensor_data" => $arr[1],
+          "timestamp" => $timestamp,
+          "sensor_board_nid" => $sensor_board->nid,
+          "sensor_board_id" => $sensor_board->id
+        );
+       
+        // Record if sensor id does not match a sensor on the sensor board
+        if (!$sensor_board->sensors[ltrim($arr[0])]) {
+          $unmatched_sensors[$arr[0]] = TRUE;
         }
+
       }
 
       // Issue warning if there are unmatched sensors and skip this Sensor Board Data node
       if ($unmatched_sensors) {
         drupal_set_message("Sensor Board {$sensor_board->id} is receiving data for sensors which is not assigned
-              to that Sensor Board node: " . implode(', ', $unmatched_sensors));
+              to that Sensor Board node: " . implode(', ', array_keys($unmatched_sensors)));
         unset($unmatched_sensors);
+        // skip
         continue;
       }
 
