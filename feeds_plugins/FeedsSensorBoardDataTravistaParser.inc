@@ -2,11 +2,13 @@
 /*
  * returns
  *    $sensor_readings[] = array(
- *      "sensor_id" => $sensor->id,
- *      "data" => $reading_data,
- *      "timestamp" => $timestamp,
- *      "sensor_board_id" => $sensor_board->id
- *    );
+ *         "sensor_id" => ltrim($arr[0]),
+ *         "sensor_nid" => $sensor_board->sensors[ltrim($arr[0])]->nid,
+ *         "sensor_data" => $arr[1],
+ *         "timestamp" => $timestamp,
+ *         "sensor_board_nid" => $sensor_board->nid,
+ *         "sensor_board_id" => $sensor_board->id
+ *       );
  */
 class FeedsSensorBoardDataTravistaParser extends FeedsParser {
 
@@ -25,6 +27,7 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
       // Make sure this is the format we support or else skip Sensor Board Data node
       if(!$pos = strpos($data, 'DATE')) {
         drupal_set_message("Reason: The data in the Sensor Board Data does not have the DATE identifier: $data");
+        // skip
         continue;
       }
 
@@ -37,6 +40,7 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
       // Make sure we have a timestamp or else skip Sensor Board Data node
       if(!$timestamp) {
         drupal_set_message("Reason: Cannot find the date/time in the Sensor Board Data node data: $data");
+        // skip
         continue;
       }
 
@@ -48,6 +52,7 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
       // If this is not an array skip the Sensor Board Data node
       if(!is_array($sensor_reading_strings)) {
         drupal_set_message("Reason: The data in the Sensor Board Data does not appear to be comma delimited: $data");
+        // skip
         continue;
       }
 
@@ -59,6 +64,7 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
         // Make sure this is an array or skip this Sensor Board Data node
         if(!is_array($arr)) {
           return "Reason: A reading in the Sensor Board Data does not appear to be formed correctly : $data";
+          // skip
           continue 2;
         }
         
@@ -73,19 +79,29 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
        
         // Record if sensor id does not match a sensor on the sensor board
         if (!$sensor_board->sensors[ltrim($arr[0])]) {
-          $unmatched_sensors[$arr[0]] = TRUE;
+          $unmatched_sensors[] = $arr[0];
         }
 
       }
 
-      // Issue warning if there are unmatched sensors and skip this Sensor Board Data node
-      if ($unmatched_sensors) {
-        drupal_set_message("Sensor Board {$sensor_board->id} is receiving data for sensors which is not assigned
-              to that Sensor Board node: " . implode(', ', array_keys($unmatched_sensors)));
-        unset($unmatched_sensors);
-        // skip
-        continue;
+      // Create sensors/sensor relations for unmatched sensors
+      // TODO Users should have an option here to have it create sensors automatically or kill 
+      // process and warn.
+      foreach ($unmatched_sensors as $sensor_id) {
+        if($sensor_id) {
+          $sensor = new stdClass(); 
+          $sensor->field_sensor_id[0]['value'] = $sensor_id;
+          $sensor->title = $sensor_id;
+          $sensor->field_sensor_to_sb[0]['nid'] = $sensor_board->nid;
+          node_save($sensor);
+        } 
+        else {
+          drupal_set_message("Sensor Board {$sensor_board->id} is receiving data that is malformed. 
+            Check Sensor Board Data node: " . $sensor_boad_data->nid);
+        }
       }
+      
+      unset($unmatched_sensors);
 
       // Save the parsed readings into $sensor_readings
       $sensor_readings = array_merge($sensor_readings, $sensor_readings_temp);
