@@ -74,6 +74,6 @@ function shub_node_info() {
  */
 function shub_views_api() {
   return array(
-    'api' => '2',
+    'api' => '3.0-alpha1',
   );
 }

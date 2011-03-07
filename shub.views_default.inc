@@ -11,602 +11,411 @@ function shub_views_default_views() {
   $view->name = 'shub_sensor_board_data';
   $view->description = '';
   $view->tag = '';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->human_name = '';
+  $view->core = 0;
+  $view->api_version = '3.0-alpha1';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->override_option('relationships', array(
-    'field_sb_data_to_sb_nid' => array(
-      'id' => 'field_sb_data_to_sb_nid',
-      'table' => 'node_data_field_sb_data_to_sb',
-      'field' => 'field_sb_data_to_sb_nid',
-    ),
-  ));
-  $handler->override_option('fields', array(
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more'] = TRUE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '20';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page'] = TRUE;
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options'] = '5, 10, 20, 40, 60, 100, 500';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'body' => 'body',
+    'created' => 'created',
+    'edit_node' => 'edit_node',
+    'view_node' => 'view_node',
+  );
+  $handler->display->display_options['style_options']['default'] = 'created';
+  $handler->display->display_options['style_options']['info'] = array(
     'body' => array(
-      'label' => 'Data',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '[view_node]',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'relationship' => 'none',
+      'separator' => '',
     ),
     'created' => array(
-      'label' => 'Post date',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'date_format' => 'small',
-      'custom_date_format' => '',
-      'exclude' => 0,
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'relationship' => 'none',
+      'sortable' => 1,
+      'separator' => '',
     ),
     'edit_node' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'edit_node',
-      'table' => 'node',
-      'field' => 'edit_node',
-      'relationship' => 'none',
+      'separator' => '',
     ),
     'view_node' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '[view_node]',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'view_node',
-      'table' => 'node',
-      'field' => 'view_node',
-      'relationship' => 'none',
+      'separator' => '',
     ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'relationship' => 'field_sb_data_to_sb_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-      'override' => array(
-        'button' => 'Override',
-      ),
-    ),
-  ));
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor_board_data' => 'sensor_board_data',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_sb_data_process_status_value' => array(
-      'id' => 'field_sb_data_process_status_value',
-      'table' => 'node_data_field_sb_data_process_status',
-      'field' => 'field_sb_data_process_status_value',
-    ),
-  ));
-  $handler->override_option('access', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('cache', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('empty', 'nothing found');
-  $handler->override_option('empty_format', '1');
-  $handler->override_option('use_ajax', TRUE);
-  $handler->override_option('use_more', 1);
-  $handler->override_option('use_more_always', 0);
-  $handler->override_option('style_plugin', 'table');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'override' => 1,
-    'sticky' => 0,
-    'order' => 'desc',
-    'columns' => array(
-      'body' => 'body',
-      'created' => 'created',
-      'edit_node' => 'edit_node',
-      'view_node' => 'view_node',
-    ),
-    'info' => array(
-      'body' => array(
-        'separator' => '',
-      ),
-      'created' => array(
-        'sortable' => 1,
-        'separator' => '',
-      ),
-      'edit_node' => array(
-        'separator' => '',
-      ),
-      'view_node' => array(
-        'separator' => '',
-      ),
-    ),
-    'default' => 'created',
-  ));
+  );
+  $handler->display->display_options['style_options']['override'] = 1;
+  $handler->display->display_options['style_options']['sticky'] = 0;
+  $handler->display->display_options['style_options']['order'] = 'desc';
+  /* Empty text: Global: Text area */
+  $handler->display->display_options['empty']['text']['id'] = 'area';
+  $handler->display->display_options['empty']['text']['table'] = 'views';
+  $handler->display->display_options['empty']['text']['field'] = 'area';
+  $handler->display->display_options['empty']['text']['label'] = '';
+  $handler->display->display_options['empty']['text']['empty'] = FALSE;
+  $handler->display->display_options['empty']['text']['content'] = 'nothing found';
+  $handler->display->display_options['empty']['text']['format'] = '1';
+  /* Relationship: Content: Sensor Board (field_sb_data_to_sb) */
+  $handler->display->display_options['relationships']['field_sb_data_to_sb_nid']['id'] = 'field_sb_data_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sb_data_to_sb_nid']['table'] = 'node_data_field_sb_data_to_sb';
+  $handler->display->display_options['relationships']['field_sb_data_to_sb_nid']['field'] = 'field_sb_data_to_sb_nid';
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Data';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['path'] = '[view_node]';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Node: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
+  /* Field: Node: Edit link */
+  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['table'] = 'node';
+  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['label'] = '';
+  $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['edit_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['edit_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['edit_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['edit_node']['empty_zero'] = 0;
+  /* Field: Node: Link */
+  $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['table'] = 'node';
+  $handler->display->display_options['fields']['view_node']['field'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['label'] = '';
+  $handler->display->display_options['fields']['view_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['path'] = '[view_node]';
+  $handler->display->display_options['fields']['view_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['view_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['view_node']['empty_zero'] = 0;
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sb_data_to_sb_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Content: Processing Status (field_sb_data_process_status) */
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['id'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['table'] = 'node_data_field_sb_data_process_status';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['field'] = 'field_sb_data_process_status_value';
+
+  /* Display: block_table_sensor_board_data_not_processed */
   $handler = $view->new_display('block', 'block_table_sensor_board_data_not_processed', 'block_1');
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor_board_data' => 'sensor_board_data',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_sb_data_process_status_value' => array(
-      'operator' => '=',
-      'value' => 'not processed',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'case' => 1,
-      'id' => 'field_sb_data_process_status_value',
-      'table' => 'node_data_field_sb_data_process_status',
-      'field' => 'field_sb_data_process_status_value',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['items_per_page'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Content: Processing Status (field_sb_data_process_status) */
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['id'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['table'] = 'node_data_field_sb_data_process_status';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['field'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['value'] = 'not processed';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['case'] = 1;
+
+  /* Display: block_table_sensor_board_data_processed */
   $handler = $view->new_display('block', 'block_table_sensor_board_data_processed', 'block_2');
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor_board_data' => 'sensor_board_data',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_sb_data_process_status_value' => array(
-      'operator' => '=',
-      'value' => 'processed',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'case' => 1,
-      'id' => 'field_sb_data_process_status_value',
-      'table' => 'node_data_field_sb_data_process_status',
-      'field' => 'field_sb_data_process_status_value',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Content: Processing Status (field_sb_data_process_status) */
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['id'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['table'] = 'node_data_field_sb_data_process_status';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['field'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['value'] = 'processed';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['case'] = 1;
+
+  /* Display: block_sensor_board_data_recently_processed */
   $handler = $view->new_display('block', 'block_sensor_board_data_recently_processed', 'block_3');
-  $handler->override_option('relationships', array());
-  $handler->override_option('fields', array(
-    'body' => array(
-      'label' => 'Data',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '[view_node]',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'relationship' => 'none',
-    ),
-    'created' => array(
-      'label' => 'Post date',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'date_format' => 'small',
-      'custom_date_format' => '',
-      'exclude' => 0,
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'relationship' => 'none',
-    ),
-    'view_node' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '[view_node]',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'view_node',
-      'table' => 'node',
-      'field' => 'view_node',
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array());
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor_board_data' => 'sensor_board_data',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_sb_data_process_status_value' => array(
-      'operator' => '=',
-      'value' => 'processed',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'case' => 1,
-      'id' => 'field_sb_data_process_status_value',
-      'table' => 'node_data_field_sb_data_process_status',
-      'field' => 'field_sb_data_process_status_value',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('title', 'Recently Processed');
-  $handler->override_option('items_per_page', 3);
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Recently Processed';
+  $handler->display->display_options['defaults']['items_per_page'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Data';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['path'] = '[view_node]';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Node: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
+  /* Field: Node: Link */
+  $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['table'] = 'node';
+  $handler->display->display_options['fields']['view_node']['field'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['label'] = '';
+  $handler->display->display_options['fields']['view_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['path'] = '[view_node]';
+  $handler->display->display_options['fields']['view_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['view_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['view_node']['empty_zero'] = 0;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Content: Processing Status (field_sb_data_process_status) */
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['id'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['table'] = 'node_data_field_sb_data_process_status';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['field'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['value'] = 'processed';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['case'] = 1;
+
+  /* Display: block_sensor_board_data_recent_not_processed */
   $handler = $view->new_display('block', 'block_sensor_board_data_recent_not_processed', 'block_4');
-  $handler->override_option('relationships', array());
-  $handler->override_option('fields', array(
-    'body' => array(
-      'label' => 'Data',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '[view_node]',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'relationship' => 'none',
-    ),
-    'created' => array(
-      'label' => 'Post date',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'date_format' => 'small',
-      'custom_date_format' => '',
-      'exclude' => 0,
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'relationship' => 'none',
-    ),
-    'view_node' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '[view_node]',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'view_node',
-      'table' => 'node',
-      'field' => 'view_node',
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array());
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor_board_data' => 'sensor_board_data',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_sb_data_process_status_value' => array(
-      'operator' => '=',
-      'value' => 'not processed',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'case' => 1,
-      'id' => 'field_sb_data_process_status_value',
-      'table' => 'node_data_field_sb_data_process_status',
-      'field' => 'field_sb_data_process_status_value',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('title', 'Not Processed');
-  $handler->override_option('items_per_page', 3);
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Not Processed';
+  $handler->display->display_options['defaults']['items_per_page'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Data';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['path'] = '[view_node]';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Node: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
+  /* Field: Node: Link */
+  $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['table'] = 'node';
+  $handler->display->display_options['fields']['view_node']['field'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['label'] = '';
+  $handler->display->display_options['fields']['view_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['path'] = '[view_node]';
+  $handler->display->display_options['fields']['view_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['view_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['view_node']['empty_zero'] = 0;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Content: Processing Status (field_sb_data_process_status) */
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['id'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['table'] = 'node_data_field_sb_data_process_status';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['field'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['value'] = 'not processed';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['case'] = 1;
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Content: Processing Status (field_sb_data_process_status) */
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['id'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['table'] = 'node_data_field_sb_data_process_status';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['field'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['path'] = 'sensor-board-data-/processed';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Sensor Board Data Processed';
+  $handler->display->display_options['menu']['weight'] = '2';
+  $handler->display->display_options['menu']['name'] = 'primary-links';
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page_2');
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Content: Processing Status (field_sb_data_process_status) */
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['id'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['table'] = 'node_data_field_sb_data_process_status';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['field'] = 'field_sb_data_process_status_value';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['value'] = 'not processed';
+  $handler->display->display_options['filters']['field_sb_data_process_status_value']['case'] = 1;
+  $handler->display->display_options['path'] = 'sensor-board-data/queue';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Sensor Board Data Queue';
+  $handler->display->display_options['menu']['weight'] = '3';
+  $handler->display->display_options['menu']['name'] = 'primary-links';
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page_3');
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board_data' => 'sensor_board_data',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  $handler->display->display_options['path'] = 'sensor-board-data';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Sensor Board Data';
+  $handler->display->display_options['menu']['weight'] = '3';
+  $handler->display->display_options['menu']['name'] = 'primary-links';
+  $translatables['shub_sensor_board_data'] = array(
+    t('Defaults'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort By'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('nothing found'),
+    t('Sensor Board'),
+    t('Data'),
+    t('[view_node]'),
+    t('Post date'),
+    t('All'),
+    t('block_table_sensor_board_data_not_processed'),
+    t('block_table_sensor_board_data_processed'),
+    t('block_sensor_board_data_recently_processed'),
+    t('Recently Processed'),
+    t('block_sensor_board_data_recent_not_processed'),
+    t('Not Processed'),
+    t('Page'),
+  );
 
   $views[$view->name] = $view;
 
@@ -615,139 +424,72 @@ function shub_views_default_views() {
   $view->name = 'shub_sensor_boards';
   $view->description = '';
   $view->tag = '';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->human_name = '';
+  $view->core = 0;
+  $view->api_version = '3.0-alpha1';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->override_option('relationships', array(
-    'field_sensor_to_sb_nid' => array(
-      'label' => 'Sensor Board Parent',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_to_sb_nid',
-      'table' => 'node_data_field_sensor_to_sb',
-      'field' => 'field_sensor_to_sb_nid',
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('fields', array(
-    'title' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 1,
-      'exclude' => 0,
-      'id' => 'title',
-      'table' => 'node',
-      'field' => 'title',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'relationship' => 'field_sensor_to_sb_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor_board' => 'sensor_board',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
-    ),
-  ));
-  $handler->override_option('access', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('cache', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('title', 'Sensor Boards');
-  $handler->override_option('style_plugin', 'table');
+  $handler->display->display_options['title'] = 'Sensor Boards';
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['style_plugin'] = 'table';
+  /* Field: Node: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_board' => 'sensor_board',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+
+  /* Display: all_sensor_boards */
   $handler = $view->new_display('block', 'all_sensor_boards', 'block_2');
-  $handler->override_option('relationships', array());
-  $handler->override_option('arguments', array());
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['path'] = 'sensor-boards';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Sensor Boards';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'primary-links';
+  $translatables['shub_sensor_boards'] = array(
+    t('Defaults'),
+    t('Sensor Boards'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort By'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('all_sensor_boards'),
+    t('Page'),
+  );
 
   $views[$view->name] = $view;
 
@@ -756,1293 +498,631 @@ function shub_views_default_views() {
   $view->name = 'shub_sensor_readings';
   $view->description = '';
   $view->tag = '';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->human_name = '';
+  $view->core = 0;
+  $view->api_version = '3.0-alpha1';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->override_option('relationships', array(
-    'field_sensor_reading_to_sb_nid' => array(
-      'id' => 'field_sensor_reading_to_sb_nid',
-      'table' => 'node_data_field_sensor_reading_to_sb',
-      'field' => 'field_sensor_reading_to_sb_nid',
-    ),
-  ));
-  $handler->override_option('fields', array(
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '1000';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page'] = TRUE;
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options'] = '50, 100, 200, 500, 1000, 2000, 4000, 6000, 8000, 10000';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'body' => 'body',
+    'field_sensor_reading_to_sensor_nid' => 'field_sensor_reading_to_sensor_nid',
+    'created' => 'created',
+    'view_node' => 'view_node',
+  );
+  $handler->display->display_options['style_options']['default'] = 'created';
+  $handler->display->display_options['style_options']['info'] = array(
     'body' => array(
-      'label' => 'Temperature',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => 'node/%1',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
+      'separator' => '',
     ),
     'field_sensor_reading_to_sensor_nid' => array(
-      'label' => 'Sensor reference by Sensor Node ID',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'widget',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => TRUE,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => FALSE,
-      ),
-      'exclude' => 0,
-      'id' => 'field_sensor_reading_to_sensor_nid',
-      'table' => 'node_data_field_sensor_reading_to_sensor',
-      'field' => 'field_sensor_reading_to_sensor_nid',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
+      'separator' => '',
     ),
     'created' => array(
-      'label' => 'Post date',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'date_format' => 'small',
-      'custom_date_format' => '',
-      'exclude' => 0,
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
+      'sortable' => 1,
+      'separator' => '',
     ),
     'view_node' => array(
-      'label' => 'Link',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'view_node',
-      'table' => 'node',
-      'field' => 'view_node',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
+      'separator' => '',
     ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-    ),
-  ));
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor_reading' => 'sensor_reading',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'date_filter' => array(
-      'operator' => 'between',
-      'value' => array(
-        'value' => NULL,
-        'min' => NULL,
-        'max' => NULL,
-        'default_date' => '-30 days',
-        'default_to_date' => 'now',
-      ),
-      'group' => '0',
-      'exposed' => TRUE,
-      'expose' => array(
-        'use_operator' => 0,
-        'operator' => 'date_filter_op',
-        'identifier' => 'date_filter',
-        'label' => 'Data between:',
-        'optional' => 1,
-        'remember' => 0,
-      ),
-      'date_fields' => array(
-        'node.created' => 'node.created',
-      ),
-      'date_method' => 'OR',
-      'granularity' => 'minute',
-      'form_type' => 'date_popup',
-      'default_date' => '-30 days',
-      'default_to_date' => 'now',
-      'year_range' => '-3:+3',
-      'id' => 'date_filter',
-      'table' => 'node',
-      'field' => 'date_filter',
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('access', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('cache', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('empty', 'No readings found.');
-  $handler->override_option('empty_format', '1');
-  $handler->override_option('use_ajax', TRUE);
-  $handler->override_option('items_per_page', 6);
-  $handler->override_option('use_pager', '1');
-  $handler->override_option('style_plugin', 'table');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'override' => 1,
-    'sticky' => 0,
-    'order' => 'desc',
-    'columns' => array(
-      'body' => 'body',
-      'field_sensor_reading_to_sensor_nid' => 'field_sensor_reading_to_sensor_nid',
-      'created' => 'created',
-      'view_node' => 'view_node',
-    ),
-    'info' => array(
-      'body' => array(
-        'separator' => '',
-      ),
-      'field_sensor_reading_to_sensor_nid' => array(
-        'separator' => '',
-      ),
-      'created' => array(
-        'sortable' => 1,
-        'separator' => '',
-      ),
-      'view_node' => array(
-        'separator' => '',
-      ),
-    ),
-    'default' => 'created',
-  ));
+  );
+  $handler->display->display_options['style_options']['override'] = 1;
+  $handler->display->display_options['style_options']['sticky'] = 0;
+  $handler->display->display_options['style_options']['order'] = 'desc';
+  /* Footer: Global: Text area */
+  $handler->display->display_options['footer']['area']['id'] = 'area';
+  $handler->display->display_options['footer']['area']['table'] = 'views';
+  $handler->display->display_options['footer']['area']['field'] = 'area';
+  $handler->display->display_options['footer']['area']['empty'] = FALSE;
+  /* Empty text: Global: Text area */
+  $handler->display->display_options['empty']['text']['id'] = 'area';
+  $handler->display->display_options['empty']['text']['table'] = 'views';
+  $handler->display->display_options['empty']['text']['field'] = 'area';
+  $handler->display->display_options['empty']['text']['label'] = '';
+  $handler->display->display_options['empty']['text']['empty'] = FALSE;
+  $handler->display->display_options['empty']['text']['content'] = 'No readings found.';
+  $handler->display->display_options['empty']['text']['format'] = '1';
+  /* Relationship: Content: Sensor Board (field_sensor_reading_to_sb) */
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['id'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['table'] = 'node_data_field_sensor_reading_to_sb';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['field'] = 'field_sensor_reading_to_sb_nid';
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Temperature';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['path'] = 'node/%1';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Content: Sensor reference by Sensor Node ID (field_sensor_reading_to_sensor) */
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['id'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['table'] = 'node_data_field_sensor_reading_to_sensor';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['field'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['label'] = 'Sensor reference by Sensor Node ID';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['link_to_node'] = 0;
+  /* Field: Node: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
+  /* Field: Node: Link */
+  $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['table'] = 'node';
+  $handler->display->display_options['fields']['view_node']['field'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['view_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['view_node']['empty_zero'] = 0;
+  /* Field: Content: Sensor Board (field_sensor_reading_to_sb) */
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['id'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['table'] = 'node_data_field_sensor_reading_to_sb';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['field'] = 'field_sensor_reading_to_sb_nid';
+  /* Sort criterion: Node: Post date */
+  $handler->display->display_options['sorts']['created']['id'] = 'created';
+  $handler->display->display_options['sorts']['created']['table'] = 'node';
+  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor_reading' => 'sensor_reading',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Date: Date (node) */
+  $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['table'] = 'node';
+  $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
+  $handler->display->display_options['filters']['date_filter']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+  $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Data between:';
+  $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+    'node.created' => 'node.created',
+  );
+  $handler->display->display_options['filters']['date_filter']['granularity'] = 'minute';
+  $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = '-365 days';
+  $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
+
+  /* Display: block_flot_sensor_readings_for_sensor_board */
   $handler = $view->new_display('block', 'block_flot_sensor_readings_for_sensor_board', 'block_2');
-  $handler->override_option('relationships', array(
-    'field_sensor_reading_to_sb_nid' => array(
-      'label' => 'Sensor Board',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_reading_to_sb_nid',
-      'table' => 'node_data_field_sensor_reading_to_sb',
-      'field' => 'field_sensor_reading_to_sb_nid',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('fields', array(
-    'body' => array(
-      'label' => 'Temperature',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 1,
-        'path' => 'node/%1',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'field_sensor_reading_to_sensor_nid' => array(
-      'label' => 'Sensor reference by Sensor Node ID',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'widget',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => TRUE,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => FALSE,
-      ),
-      'exclude' => 0,
-      'id' => 'field_sensor_reading_to_sensor_nid',
-      'table' => 'node_data_field_sensor_reading_to_sensor',
-      'field' => 'field_sensor_reading_to_sensor_nid',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'created' => array(
-      'label' => 'Post date',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'date_format' => 'small',
-      'custom_date_format' => '',
-      'exclude' => 0,
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'timemode_datapoint' => array(
-      'label' => 'Timemode Data point',
-      'alter' => array(
-        'alter_text' => FALSE,
-        'text' => '',
-        'make_link' => FALSE,
-        'path' => '',
-        'alt' => '',
-        'link_class' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'trim' => FALSE,
-        'max_length' => '',
-        'word_boundary' => TRUE,
-        'ellipsis' => TRUE,
-        'strip_tags' => FALSE,
-        'html' => FALSE,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'series' => array(
-        'field' => 'node.created',
-      ),
-      'value' => array(
-        'field' => 'node_revisions.body',
-      ),
-      'exclude' => 0,
-      'id' => 'timemode_datapoint',
-      'table' => 'views',
-      'field' => 'timemode_datapoint',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'field_sensor_reading_to_sb_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('items_per_page', 100);
-  $handler->override_option('style_plugin', 'flot_timemode');
-  $handler->override_option('style_options', array(
-    'type' => 'point',
-    'size' => '600x300',
-    'x' => array(
-      'label' => 'default',
-    ),
-    'y' => array(
-      'label' => 'default',
-      'pad' => 1,
-      'custom-y-max' => '',
-      'custom-y-min' => '',
-    ),
-    'colors' => array(
-      '0' => '#999',
-      '1' => '#ccc',
-      '2' => '#ccc',
-    ),
-    'layers' => array(
-      'all_data:attachment_1' => 0,
-      'r:default' => 0,
-      'r:page_1' => 0,
-    ),
-  ));
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['items_per_page'] = FALSE;
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'charts';
+  $handler->display->display_options['style_options']['grouping'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['style_options']['width'] = '100%';
+  $handler->display->display_options['style_options']['height'] = '700px';
+  $handler->display->display_options['style_options']['type'] = array(
+    'amcharts' => 'line',
+    'flot' => 'line',
+    'google-charts' => 'line',
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: Content: Sensor Board (field_sensor_reading_to_sb) */
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['id'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['table'] = 'node_data_field_sensor_reading_to_sb';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['field'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['required'] = 1;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Temperature';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['path'] = 'node/%1';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Content: Sensor reference by Sensor Node ID (field_sensor_reading_to_sensor) */
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['id'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['table'] = 'node_data_field_sensor_reading_to_sensor';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['field'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['link_to_node'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['label_type'] = 'none';
+  /* Field: Node: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+
+  /* Display: block_table_sensor_readings_for_sensor_board */
   $handler = $view->new_display('block', 'block_table_sensor_readings_for_sensor_board', 'block_1');
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'field_sensor_reading_to_sb_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '20';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page'] = TRUE;
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options'] = '20, 50, 100, 200, 500, 1000, 2000, 4000, 6000';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+
+  /* Display: page_flot_sensor_readings_all */
   $handler = $view->new_display('page', 'page_flot_sensor_readings_all', 'page_1');
-  $handler->override_option('relationships', array());
-  $handler->override_option('fields', array(
-    'body' => array(
-      'label' => 'Temperature',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => 'node/%1',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'field_sensor_reading_to_sensor_nid' => array(
-      'label' => 'Sensor reference by Sensor Node ID',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'widget',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => TRUE,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => FALSE,
-      ),
-      'exclude' => 0,
-      'id' => 'field_sensor_reading_to_sensor_nid',
-      'table' => 'node_data_field_sensor_reading_to_sensor',
-      'field' => 'field_sensor_reading_to_sensor_nid',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'created' => array(
-      'label' => 'Post date',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'date_format' => 'small',
-      'custom_date_format' => '',
-      'exclude' => 0,
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'view_node' => array(
-      'label' => 'Link',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'view_node',
-      'table' => 'node',
-      'field' => 'view_node',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'timemode_datapoint' => array(
-      'label' => 'Timemode Data point',
-      'alter' => array(
-        'alter_text' => FALSE,
-        'text' => '',
-        'make_link' => FALSE,
-        'path' => '',
-        'alt' => '',
-        'link_class' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'trim' => FALSE,
-        'max_length' => '',
-        'word_boundary' => TRUE,
-        'ellipsis' => TRUE,
-        'strip_tags' => FALSE,
-        'html' => FALSE,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'series' => array(
-        'field' => 'node.created',
-      ),
-      'value' => array(
-        'field' => 'node_revisions.body',
-      ),
-      'exclude' => 0,
-      'id' => 'timemode_datapoint',
-      'table' => 'views',
-      'field' => 'timemode_datapoint',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array());
-  $handler->override_option('title', 'All Sensor Readings');
-  $handler->override_option('items_per_page', 100);
-  $handler->override_option('style_plugin', 'flot_timemode');
-  $handler->override_option('style_options', array(
-    'type' => 'point',
-    'size' => '400x200',
-    'x' => array(
-      'label' => 'default',
-    ),
-    'y' => array(
-      'label' => 'default',
-      'pad' => 1,
-      'custom-y-max' => '',
-      'custom-y-min' => '',
-    ),
-    'colors' => array(
-      '0' => '#666',
-      '1' => '#999',
-      '2' => '#ccc',
-    ),
-    'layers' => array(
-      'shub_sensor_readings:block_2' => 0,
-      'shub_sensor_readings:block_5' => 0,
-      'shub_sensor_readings:node_content_1' => 0,
-    ),
-  ));
-  $handler->override_option('path', 'sensor-readings');
-  $handler->override_option('menu', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'All Sensor Readings';
+  $handler->display->display_options['defaults']['items_per_page'] = FALSE;
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'charts';
+  $handler->display->display_options['style_options']['grouping'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['style_options']['width'] = '100%';
+  $handler->display->display_options['style_options']['height'] = '600px';
+  $handler->display->display_options['style_options']['type'] = array(
+    'amcharts' => 'line',
+    'flot' => 'line',
+    'google-charts' => 'line',
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['footer'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Temperature';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['path'] = 'node/%1';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Content: Sensor reference by Sensor Node ID (field_sensor_reading_to_sensor) */
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['id'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['table'] = 'node_data_field_sensor_reading_to_sensor';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['field'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['label'] = 'Sensor reference by Sensor Node ID';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['link_to_node'] = 0;
+  /* Field: Node: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['path'] = 'sensor-readings';
+
+  /* Display: block_sensor_readings_all */
   $handler = $view->new_display('block', 'block_sensor_readings_all', 'block_3');
-  $handler->override_option('relationships', array());
-  $handler->override_option('arguments', array());
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+
+  /* Display: block_table_sensor_readings_for_sensor */
   $handler = $view->new_display('block', 'block_table_sensor_readings_for_sensor', 'block_4');
-  $handler->override_option('relationships', array(
-    'field_sensor_reading_to_sensor_nid' => array(
-      'label' => 'Sensor reference by Sensor Node ID',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_reading_to_sensor_nid',
-      'table' => 'node_data_field_sensor_reading_to_sensor',
-      'field' => 'field_sensor_reading_to_sensor_nid',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'field_sensor_reading_to_sensor_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: Content: Sensor reference by Sensor Node ID (field_sensor_reading_to_sensor) */
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['id'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['table'] = 'node_data_field_sensor_reading_to_sensor';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['field'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['required'] = 1;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+
+  /* Display: block_flot_sensor_readings_for_sensor */
   $handler = $view->new_display('block', 'block_flot_sensor_readings_for_sensor', 'block_5');
-  $handler->override_option('relationships', array(
-    'field_sensor_reading_to_sensor_nid' => array(
-      'label' => 'Sensor reference by Sensor Node ID',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_reading_to_sensor_nid',
-      'table' => 'node_data_field_sensor_reading_to_sensor',
-      'field' => 'field_sensor_reading_to_sensor_nid',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('fields', array(
-    'body' => array(
-      'label' => 'Temperature',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 1,
-        'path' => 'node/%1',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'field_sensor_reading_to_sensor_nid' => array(
-      'label' => 'Sensor reference by Sensor Node ID',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'widget',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => TRUE,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => FALSE,
-      ),
-      'exclude' => 0,
-      'id' => 'field_sensor_reading_to_sensor_nid',
-      'table' => 'node_data_field_sensor_reading_to_sensor',
-      'field' => 'field_sensor_reading_to_sensor_nid',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'created' => array(
-      'label' => 'Post date',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'date_format' => 'small',
-      'custom_date_format' => '',
-      'exclude' => 0,
-      'id' => 'created',
-      'table' => 'node',
-      'field' => 'created',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'view_node' => array(
-      'label' => 'Link',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'view_node',
-      'table' => 'node',
-      'field' => 'view_node',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'timemode_datapoint' => array(
-      'label' => 'Timemode Data point',
-      'alter' => array(
-        'alter_text' => FALSE,
-        'text' => '',
-        'make_link' => FALSE,
-        'path' => '',
-        'alt' => '',
-        'link_class' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'trim' => FALSE,
-        'max_length' => '',
-        'word_boundary' => TRUE,
-        'ellipsis' => TRUE,
-        'strip_tags' => FALSE,
-        'html' => FALSE,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'series' => array(
-        'field' => 'node.created',
-      ),
-      'value' => array(
-        'field' => 'node_revisions.body',
-      ),
-      'exclude' => 0,
-      'id' => 'timemode_datapoint',
-      'table' => 'views',
-      'field' => 'timemode_datapoint',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'relationship' => 'field_sensor_reading_to_sensor_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-    ),
-  ));
-  $handler->override_option('items_per_page', 100);
-  $handler->override_option('style_plugin', 'flot_timemode');
-  $handler->override_option('style_options', array(
-    'type' => 'point',
-    'size' => '400x200',
-    'x' => array(
-      'label' => 'default',
-    ),
-    'y' => array(
-      'label' => 'default',
-      'pad' => 1,
-      'custom-y-max' => '',
-      'custom-y-min' => '',
-    ),
-    'colors' => array(
-      '0' => '#666',
-      '1' => '#999',
-      '2' => '#ccc',
-    ),
-    'layers' => array(
-      'all_data:attachment_1' => 0,
-      'r:default' => 0,
-      'r:page_1' => 0,
-      'shub_sensor_readings:block_2' => 0,
-    ),
-  ));
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['items_per_page'] = FALSE;
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'charts';
+  $handler->display->display_options['style_options']['grouping'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['style_options']['width'] = '100%';
+  $handler->display->display_options['style_options']['height'] = '600px';
+  $handler->display->display_options['style_options']['type'] = array(
+    'amcharts' => 'line',
+    'flot' => 'line',
+    'google-charts' => 'line',
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: Content: Sensor reference by Sensor Node ID (field_sensor_reading_to_sensor) */
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['id'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['table'] = 'node_data_field_sensor_reading_to_sensor';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['field'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['required'] = 1;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Temperature';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['path'] = 'node/%1';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Content: Sensor reference by Sensor Node ID (field_sensor_reading_to_sensor) */
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['id'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['table'] = 'node_data_field_sensor_reading_to_sensor';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['field'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['label'] = 'Sensor reference by Sensor Node ID';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sensor_nid']['link_to_node'] = 0;
+  /* Field: Node: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+
+  /* Display: attachment_table_sensor_readings_all */
   $handler = $view->new_display('attachment', 'attachment_table_sensor_readings_all', 'attachment_1');
-  $handler->override_option('relationships', array());
-  $handler->override_option('arguments', array());
-  $handler->override_option('items_per_page', 100);
-  $handler->override_option('attachment_position', 'after');
-  $handler->override_option('inherit_arguments', TRUE);
-  $handler->override_option('inherit_exposed_filters', 1);
-  $handler->override_option('inherit_pager', 1);
-  $handler->override_option('render_pager', TRUE);
-  $handler->override_option('displays', array(
-    'page_1' => 'page_1',
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = 100;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['attachment_position'] = 'after';
+  $handler->display->display_options['inherit_exposed_filters'] = 1;
+  $handler->display->display_options['inherit_pager'] = 1;
+  $handler->display->display_options['render_pager'] = TRUE;
+  $handler->display->display_options['displays'] = array(
     'default' => 0,
     'block_2' => 0,
     'block_1' => 0,
+    'page_1' => 0,
     'block_3' => 0,
     'block_4' => 0,
     'block_5' => 0,
-    'node_content_1' => 0,
-  ));
+  );
+
+  /* Display: attachment_table_sensor_readings_for_sensor_board */
   $handler = $view->new_display('attachment', 'attachment_table_sensor_readings_for_sensor_board', 'attachment_2');
-  $handler->override_option('relationships', array(
-    'field_sensor_reading_to_sb_nid' => array(
-      'label' => 'Sensor Board',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_reading_to_sb_nid',
-      'table' => 'node_data_field_sensor_reading_to_sb',
-      'field' => 'field_sensor_reading_to_sb_nid',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-      ),
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'field_sensor_reading_to_sb_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('items_per_page', 100);
-  $handler->override_option('attachment_position', 'after');
-  $handler->override_option('inherit_arguments', TRUE);
-  $handler->override_option('inherit_exposed_filters', 1);
-  $handler->override_option('inherit_pager', 1);
-  $handler->override_option('render_pager', TRUE);
-  $handler->override_option('displays', array(
-    'block_2' => 'block_2',
-    'default' => 0,
-    'block_1' => 0,
-    'page_1' => 0,
-    'block_3' => 0,
-    'block_4' => 0,
-    'block_5' => 0,
-  ));
-  $handler = $view->new_display('attachment', 'attachment_table_sensor_readings_for_sensor', 'attachment_3');
-  $handler->override_option('relationships', array(
-    'field_sensor_reading_to_sensor_nid' => array(
-      'label' => 'Sensor reference by Sensor Node ID',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_reading_to_sensor_nid',
-      'table' => 'node_data_field_sensor_reading_to_sensor',
-      'field' => 'field_sensor_reading_to_sensor_nid',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-      ),
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'field_sensor_reading_to_sensor_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('items_per_page', 100);
-  $handler->override_option('attachment_position', 'after');
-  $handler->override_option('inherit_arguments', TRUE);
-  $handler->override_option('inherit_exposed_filters', 1);
-  $handler->override_option('inherit_pager', 1);
-  $handler->override_option('render_pager', TRUE);
-  $handler->override_option('displays', array(
-    'block_5' => 'block_5',
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = 100;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: Content: Sensor Board (field_sensor_reading_to_sb) */
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['id'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['table'] = 'node_data_field_sensor_reading_to_sb';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['field'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sb_nid']['required'] = 1;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+  $handler->display->display_options['attachment_position'] = 'after';
+  $handler->display->display_options['inherit_exposed_filters'] = 1;
+  $handler->display->display_options['inherit_pager'] = 1;
+  $handler->display->display_options['render_pager'] = TRUE;
+  $handler->display->display_options['displays'] = array(
     'default' => 0,
     'block_2' => 0,
     'block_1' => 0,
     'page_1' => 0,
     'block_3' => 0,
     'block_4' => 0,
-  ));
+    'block_5' => 0,
+  );
+
+  /* Display: attachment_table_sensor_readings_for_sensor */
+  $handler = $view->new_display('attachment', 'attachment_table_sensor_readings_for_sensor', 'attachment_3');
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = 100;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: Content: Sensor reference by Sensor Node ID (field_sensor_reading_to_sensor) */
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['id'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['table'] = 'node_data_field_sensor_reading_to_sensor';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['field'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['relationships']['field_sensor_reading_to_sensor_nid']['required'] = 1;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sensor_reading_to_sensor_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+  $handler->display->display_options['attachment_position'] = 'after';
+  $handler->display->display_options['inherit_exposed_filters'] = 1;
+  $handler->display->display_options['inherit_pager'] = 1;
+  $handler->display->display_options['render_pager'] = TRUE;
+  $handler->display->display_options['displays'] = array(
+    'default' => 0,
+    'block_2' => 0,
+    'block_1' => 0,
+    'page_1' => 0,
+    'block_3' => 0,
+    'block_4' => 0,
+    'block_5' => 0,
+  );
+
+  /* Display: Block Pie Chart of Sensor Reading by SB */
+  $handler = $view->new_display('block', 'Block Pie Chart of Sensor Reading by SB', 'block_charts_readings_all_groupby_sb');
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'charts';
+  $handler->display->display_options['style_options']['type'] = array(
+    'amcharts' => 'line',
+    'google-charts' => 'pie',
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: SQL Aggregation: Group By Fields */
+  $handler->display->display_options['fields']['views_sql_groupedfields']['id'] = 'views_sql_groupedfields';
+  $handler->display->display_options['fields']['views_sql_groupedfields']['table'] = 'views_groupby';
+  $handler->display->display_options['fields']['views_sql_groupedfields']['field'] = 'views_sql_groupedfields';
+  $handler->display->display_options['fields']['views_sql_groupedfields']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['views_sql_groupedfields']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['views_sql_groupedfields']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['views_sql_groupedfields']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['views_sql_groupedfields']['empty_zero'] = 0;
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = 'Temperature';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['path'] = 'node/%1';
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Field: Content: Sensor Board (field_sensor_reading_to_sb) */
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['id'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['table'] = 'node_data_field_sensor_reading_to_sb';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['field'] = 'field_sensor_reading_to_sb_nid';
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['link_to_node'] = 0;
+  $handler->display->display_options['fields']['field_sensor_reading_to_sb_nid']['label_type'] = 'none';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['block_description'] = 'Pie of sensor readings by sensor board';
+  $translatables['shub_sensor_readings'] = array(
+    t('Defaults'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort By'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('Text area'),
+    t('No readings found.'),
+    t('Sensor Board'),
+    t('Temperature'),
+    t('node/%1'),
+    t('Sensor reference by Sensor Node ID'),
+    t('Post date'),
+    t('Link'),
+    t('All'),
+    t('Data between:'),
+    t('block_flot_sensor_readings_for_sensor_board'),
+    t('block_table_sensor_readings_for_sensor_board'),
+    t('page_flot_sensor_readings_all'),
+    t('All Sensor Readings'),
+    t('block_sensor_readings_all'),
+    t('block_table_sensor_readings_for_sensor'),
+    t('block_flot_sensor_readings_for_sensor'),
+    t('attachment_table_sensor_readings_all'),
+    t('attachment_table_sensor_readings_for_sensor_board'),
+    t('attachment_table_sensor_readings_for_sensor'),
+    t('Block Pie Chart of Sensor Reading by SB'),
+    t('Group By Fields'),
+    t('Pie of sensor readings by sensor board'),
+  );
 
   $views[$view->name] = $view;
 
@@ -2051,141 +1131,219 @@ function shub_views_default_views() {
   $view->name = 'shub_sensors';
   $view->description = 'Sensors attached to a sensor board';
   $view->tag = '';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->human_name = '';
+  $view->core = 0;
+  $view->api_version = '3.0-alpha1';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->override_option('relationships', array(
-    'field_sensor_to_sb_nid' => array(
-      'label' => 'Sensor Board Parent',
-      'required' => 1,
-      'delta' => -1,
-      'id' => 'field_sensor_to_sb_nid',
-      'table' => 'node_data_field_sensor_to_sb',
-      'field' => 'field_sensor_to_sb_nid',
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('fields', array(
-    'title' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 1,
-      'exclude' => 0,
-      'id' => 'title',
-      'table' => 'node',
-      'field' => 'title',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
-    ),
-  ));
-  $handler->override_option('arguments', array(
-    'nid' => array(
-      'default_action' => 'default',
-      'style_plugin' => 'default_summary',
-      'style_options' => array(),
-      'wildcard' => 'all',
-      'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
-      'default_argument_type' => 'node',
-      'default_argument' => '',
-      'validate_type' => 'none',
-      'validate_fail' => 'not found',
-      'break_phrase' => 0,
-      'not' => 0,
-      'id' => 'nid',
-      'table' => 'node',
-      'field' => 'nid',
-      'validate_user_argument_type' => 'uid',
-      'validate_user_roles' => array(
-        '2' => 0,
-        '3' => 0,
-      ),
-      'relationship' => 'field_sensor_to_sb_nid',
-      'default_options_div_prefix' => '',
-      'default_argument_fixed' => '',
-      'default_argument_user' => 0,
-      'default_argument_php' => '',
-      'validate_argument_node_type' => array(
-        'example_node_type_1' => 0,
-        'example_node_type_2' => 0,
-        'sensor' => 0,
-        'sensor_board' => 0,
-        'sensor_board_data' => 0,
-        'sensor_reading' => 0,
-        'page' => 0,
-        'story' => 0,
-      ),
-      'validate_argument_node_access' => 0,
-      'validate_argument_nid_type' => 'nid',
-      'validate_argument_vocabulary' => array(),
-      'validate_argument_type' => 'tid',
-      'validate_argument_transform' => 0,
-      'validate_user_restrict_roles' => 0,
-      'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('filters', array(
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'sensor' => 'sensor',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('access', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('cache', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('title', 'Sensors Connected');
-  $handler->override_option('empty', 'No sensors found. <a href="/node/add/sensor">Add a sensor</a>.');
-  $handler->override_option('empty_format', '3');
-  $handler->override_option('style_plugin', 'table');
+  $handler->display->display_options['title'] = 'Sensors Connected';
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '100';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
+  $handler->display->display_options['style_plugin'] = 'table';
+  /* Empty text: Global: Text area */
+  $handler->display->display_options['empty']['text']['id'] = 'area';
+  $handler->display->display_options['empty']['text']['table'] = 'views';
+  $handler->display->display_options['empty']['text']['field'] = 'area';
+  $handler->display->display_options['empty']['text']['label'] = '';
+  $handler->display->display_options['empty']['text']['empty'] = FALSE;
+  $handler->display->display_options['empty']['text']['content'] = 'No sensors found. <a href="/node/add/sensor">Add a sensor</a>.';
+  $handler->display->display_options['empty']['text']['format'] = '3';
+  /* Relationship: Content: Sensor Board Parent (field_sensor_to_sb) */
+  $handler->display->display_options['relationships']['field_sensor_to_sb_nid']['id'] = 'field_sensor_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sensor_to_sb_nid']['table'] = 'node_data_field_sensor_to_sb';
+  $handler->display->display_options['relationships']['field_sensor_to_sb_nid']['field'] = 'field_sensor_to_sb_nid';
+  $handler->display->display_options['relationships']['field_sensor_to_sb_nid']['required'] = 1;
+  /* Field: Node: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Field: Content: Sensor Board Parent (field_sensor_to_sb) */
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['id'] = 'field_sensor_to_sb_nid';
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['table'] = 'node_data_field_sensor_to_sb';
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['field'] = 'field_sensor_to_sb_nid';
+  /* Field: Node: Edit link */
+  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['table'] = 'node';
+  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+  /* Argument: Node: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_sensor_to_sb_nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sensor' => 'sensor',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+
+  /* Display: block_sensors_attached_to_sensor_board */
   $handler = $view->new_display('block', 'block_sensors_attached_to_sensor_board', 'block_1');
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'title' => 'title',
+    'field_sensor_to_sb_nid' => 'field_sensor_to_sb_nid',
+  );
+  $handler->display->display_options['style_options']['default'] = 'title';
+  $handler->display->display_options['style_options']['info'] = array(
+    'title' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'field_sensor_to_sb_nid' => array(
+      'align' => '',
+      'separator' => '',
+    ),
+  );
+  $handler->display->display_options['style_options']['override'] = 1;
+  $handler->display->display_options['style_options']['sticky'] = 0;
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Node: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Field: Content: Sensor Board Parent (field_sensor_to_sb) */
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['id'] = 'field_sensor_to_sb_nid';
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['table'] = 'node_data_field_sensor_to_sb';
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['field'] = 'field_sensor_to_sb_nid';
+  /* Field: Node: Edit link */
+  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['table'] = 'node';
+  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['label'] = '';
+  $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['edit_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['edit_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['edit_node']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['edit_node']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['edit_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['edit_node']['empty_zero'] = 0;
+  /* Field: Node: Delete link */
+  $handler->display->display_options['fields']['delete_node']['id'] = 'delete_node';
+  $handler->display->display_options['fields']['delete_node']['table'] = 'node';
+  $handler->display->display_options['fields']['delete_node']['field'] = 'delete_node';
+  $handler->display->display_options['fields']['delete_node']['label'] = '';
+  $handler->display->display_options['fields']['delete_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['delete_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['delete_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['delete_node']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['delete_node']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['delete_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['delete_node']['empty_zero'] = 0;
+
+  /* Display: all_sensors */
   $handler = $view->new_display('block', 'all_sensors', 'block_2');
-  $handler->override_option('relationships', array());
-  $handler->override_option('arguments', array());
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Node: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Field: Content: Sensor Board Parent (field_sensor_to_sb) */
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['id'] = 'field_sensor_to_sb_nid';
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['table'] = 'node_data_field_sensor_to_sb';
+  $handler->display->display_options['fields']['field_sensor_to_sb_nid']['field'] = 'field_sensor_to_sb_nid';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  $handler->display->display_options['path'] = 'sensors';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Sensors';
+  $handler->display->display_options['menu']['weight'] = '1';
+  $handler->display->display_options['menu']['name'] = 'primary-links';
+  $translatables['shub_sensors'] = array(
+    t('Defaults'),
+    t('Sensors Connected'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort By'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('No sensors found. <a href="/node/add/sensor">Add a sensor</a>.'),
+    t('Sensor Board Parent'),
+    t('Edit link'),
+    t('All'),
+    t('block_sensors_attached_to_sensor_board'),
+    t('all_sensors'),
+    t('Page'),
+  );
 
   $views[$view->name] = $view;
 
