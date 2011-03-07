@@ -8,6 +8,9 @@ function shub_ctools_plugin_api() {
   if ($module == "context" && $api == "context") {
     return array("version" => 3);
   }
+  elseif ($module == "feeds" && $api == "feeds_importer_default") {
+    return array("version" => 1);
+  }
   elseif ($module == "quicktabs" && $api == "quicktabs") {
     return array("version" => 1);
   }
