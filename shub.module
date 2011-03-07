@@ -291,3 +291,27 @@ function shub_sensor_reading_save($data, $sensor_id, $timestamp, $sensor_board_i
 function shub_sensor_load($node) {
   $node->id = $node->field_sensor_id[0]['value'];
 }
+
+/*
+ * Sensor Load By ID: Load a Sensor Board node using the Sensor's ID
+ */
+function shub_sensor_load_by_id($sensor_id) {
+  // Retrieve the corresponding sensor node by matching $sensor_id
+  // to field_sensor_board_id
+  $q = " 
+    SELECT node.nid AS nid
+    FROM node node
+    LEFT JOIN content_type_sensor
+      ON node.vid = content_type_sensor.vid
+    WHERE (content_type_sensor.field_sensor_id_value) = ('%s')
+  ";
+  $result = db_query($q, $sensor_id);
+  $sensor_nid = db_result($result);
+  // If there isn't a matching sensor, notify the user
+  if($sensor_nid != 0) {
+    return node_load($sensor_nid);
+  }
+  else {
+    drupal_set_message("Could not find Sensor with ID {$sensor_id}");
+  }
+}

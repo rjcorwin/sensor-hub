@@ -13,16 +13,23 @@
 class FeedsSensorBoardDataTravistaParser extends FeedsParser {
 
   /**
-  * Parses a raw string and populates FeedsImportBatch object from it.
-  */
+   * Parses a raw string and populates FeedsImportBatch object from it.
+   */
   public function parse(FeedsImportBatch $batch, FeedsSource $source) {
-    // Get the file's content.
     $sensor_board_data_fetched = $batch->getRaw();
     $sensor_readings = array();
+    
+    // Parse each Fetched Sensor Board Data string
+    // TODO Is there a way to get one item from batch at a time?
     foreach($sensor_board_data_fetched as $sensor_board_data) {
 
       $data = $sensor_board_data->body;
-      $sensor_board = node_load($sensor_board_data->field_sb_data_to_sb[0]['nid']);
+
+      // If this sensor board data has the same sensor board then no reason to retrieve a cached
+      // version, stay current. Important if sensors are automatically added.
+      if($sensor_board->nid != $sensor_board_data->field_sb_data_to_sb[0]['nid']){
+        $sensor_board = node_load($sensor_board_data->field_sb_data_to_sb[0]['nid']);
+      }
 
       // Make sure this is the format we support or else skip Sensor Board Data node
       if(!$pos = strpos($data, 'DATE')) {
@@ -56,11 +63,12 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
         continue;
       }
 
-      // Place each reading in a temporary array
+      // Parse the Sensor Board Data string into Sensor Readings
+      // TODO can we batch this down to this level?
+
       foreach ($sensor_reading_strings as $sensor_string) {
         
         $arr = explode(':', $sensor_string);
-        
         // Make sure this is an array or skip this Sensor Board Data node
         if(!is_array($arr)) {
           return "Reason: A reading in the Sensor Board Data does not appear to be formed correctly : $data";
@@ -68,40 +76,49 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
           continue 2;
         }
         
+        $sensor_id = ltrim($arr[0]);
+        $sensor_reading = ltrim($arr[1]);
+
+        // If this Sensor ID does not match this Sensor Board's Sensors, create/relate it
+        // TODO Users should have an option here to have it create sensors automatically or kill 
+        // process and warn.
+      
+        if (!$sensor_board->sensors[$sensor_id]) {
+          
+          if($sensor = shub_sensor_load_by_id($sensor_id)) {
+            $sensor->field_sensor_to_sb[0]['nid'] = $sensor_board->nid;
+            node_save($sensor);
+            drupal_set_message("Sensor $sensor->id was assigned to $sensor_board->id");
+            $sensor_board->sensor[$sensor->id] = $sensor;
+          }
+          else {
+            if($sensor_id) {
+              $sensor = new stdClass();
+              $sensor->type = "sensor";
+              $sensor->field_sensor_id = array(array('value' => $sensor_id));
+              $sensor->title = $sensor_id;
+              $sensor->field_sensor_to_sb = array(array('nid' =>  $sensor_board->nid));
+              node_save($sensor);
+              // Attach to the sensor board and 
+              $sensor_board->sensors[$sensor_id] = $sensor;
+              drupal_set_message("Created new sensor with ID $sensor->id and attached to Sensor Board {$sensor_board->id}");  
+            }
+            else {
+              drupal_set_message("Reading with no sensor id found in Sensor Board Data node $sensor_board_data->nid");
+            }
+          }
+        }
+  
         $sensor_readings_temp[] = array(
-          "sensor_id" => ltrim($arr[0]),
-          "sensor_nid" => $sensor_board->sensors[ltrim($arr[0])]->nid,
-          "sensor_data" => $arr[1],
+          "sensor_id" => $sensor_id,
+          "sensor_nid" => $sensor_board->sensors[$sensor_id]->nid,
+          "sensor_data" => $sensor_reading,
           "timestamp" => $timestamp,
           "sensor_board_nid" => $sensor_board->nid,
           "sensor_board_id" => $sensor_board->id
         );
-       
-        // Record if sensor id does not match a sensor on the sensor board
-        if (!$sensor_board->sensors[ltrim($arr[0])]) {
-          $unmatched_sensors[] = $arr[0];
-        }
-
-      }
-
-      // Create sensors/sensor relations for unmatched sensors
-      // TODO Users should have an option here to have it create sensors automatically or kill 
-      // process and warn.
-      foreach ($unmatched_sensors as $sensor_id) {
-        if($sensor_id) {
-          $sensor = new stdClass(); 
-          $sensor->field_sensor_id[0]['value'] = $sensor_id;
-          $sensor->title = $sensor_id;
-          $sensor->field_sensor_to_sb[0]['nid'] = $sensor_board->nid;
-          node_save($sensor);
-        } 
-        else {
-          drupal_set_message("Sensor Board {$sensor_board->id} is receiving data that is malformed. 
-            Check Sensor Board Data node: " . $sensor_boad_data->nid);
-        }
-      }
       
-      unset($unmatched_sensors);
+      }
 
       // Save the parsed readings into $sensor_readings
       $sensor_readings = array_merge($sensor_readings, $sensor_readings_temp);
