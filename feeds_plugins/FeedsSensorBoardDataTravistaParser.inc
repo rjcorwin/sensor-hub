@@ -52,8 +52,8 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
     $string = $sensor_board_data->body;
 
     // Make sure this is the format we support or else skip Sensor Board Data node
-    if(!$pos = strpos($data, 'DATE')) {
-      drupal_set_message("Reason: The data in the Sensor Board Data does not have the DATE identifier: $data");
+    if(!$pos = strpos($string, 'DATE')) {
+      drupal_set_message("Reason: The data in the Sensor Board Data does not have the DATE identifier: $string");
     }
 
     // Get the date and time from the reading
@@ -85,7 +85,7 @@ class FeedsSensorBoardDataTravistaParser extends FeedsParser {
     $data['sensor_reading_strings'] = explode(',', $sensor_readings_string);
 
     // If this is not an array skip the Sensor Board Data node
-    if(!is_array($sensor_reading_strings)) {
+    if(!is_array($data['sensor_reading_strings'])) {
       drupal_set_message("Reason: The data in the Sensor Board Data does not appear to be comma delimited: $string");
     }
 
