@@ -22,6 +22,8 @@ function shub_sensor_hub_groups_public_spaces_presets() {
         'atrium_casetracker' => '0',
         'atrium_members' => '1',
         'atrium_shoutbox' => '0',
+        'shub_sensor' => '1',
+        'shub_sensor_directory' => '1',
         'spaces_dashboard' => '1',
       ),
       'site_frontpage' => 'dashboard',
