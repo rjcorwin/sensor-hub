@@ -1,0 +1,7 @@
+core = "6.x"
+dependencies[] = "spaces"
+description = "A Space with essential Features enabled for Sensor Boards."
+features[ctools][] = "spaces:spaces:3"
+features[spaces_presets][] = "sensor_hub_groups_public"
+name = "Sensor Hub Group Public Space"
+package = "Features"

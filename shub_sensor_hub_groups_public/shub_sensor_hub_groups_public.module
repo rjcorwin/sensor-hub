@@ -1,0 +1,3 @@
+<?php
+
+include_once('shub_sensor_hub_groups_public.features.inc');
