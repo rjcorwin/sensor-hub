@@ -6,9 +6,9 @@
 function shub_sensor_boards_directory_views_default_views() {
   $views = array();
 
-  // Exported view: sensor_board_directory
+  // Exported view: shub_sensor_board_directory
   $view = new view;
-  $view->name = 'sensor_board_directory';
+  $view->name = 'shub_sensor_board_directory';
   $view->description = '';
   $view->tag = '';
   $view->view_php = '';
@@ -102,7 +102,7 @@ function shub_sensor_boards_directory_views_default_views() {
     'weight' => 0,
     'name' => 'navigation',
   ));
-  $translatables['sensor_board_directory'] = array(
+  $translatables['shub_sensor_board_directory'] = array(
     t('Defaults'),
     t('Page'),
   );
