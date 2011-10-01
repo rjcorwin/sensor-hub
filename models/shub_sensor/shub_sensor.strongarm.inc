@@ -72,6 +72,24 @@ function shub_sensor_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'content_extra_weights_shub_sensor';
+  $strongarm->value = array(
+    'title' => '-3',
+    'body_field' => '0',
+    'revision_information' => '3',
+    'author' => '2',
+    'options' => '4',
+    'comment_settings' => '5',
+    'menu' => '-2',
+    'book' => '1',
+    'attachments' => '6',
+    'og_nodeapi' => '-1',
+  );
+  $export['content_extra_weights_shub_sensor'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'node_options_shub_sensor';
   $strongarm->value = array(
     0 => 'status',

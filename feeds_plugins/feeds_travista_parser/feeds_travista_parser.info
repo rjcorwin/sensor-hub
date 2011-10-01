@@ -1,0 +1,7 @@
+name = Feeds Travista Parser
+description = Parses sensor board strings in Travista format.
+package = Feeds
+dependencies[] = ctools
+dependencies[] = feeds 
+dependencies[] = views
+core = 6.x

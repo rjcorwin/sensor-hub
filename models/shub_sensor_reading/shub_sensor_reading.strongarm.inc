@@ -74,16 +74,16 @@ function shub_sensor_reading_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'content_extra_weights_shub_sensor_reading';
   $strongarm->value = array(
-    'title' => '44',
-    'body_field' => '47',
-    'revision_information' => '50',
-    'author' => '49',
-    'options' => '51',
-    'comment_settings' => '52',
-    'menu' => '45',
-    'book' => '48',
-    'attachments' => '53',
-    'og_nodeapi' => '46',
+    'title' => '45',
+    'body_field' => '48',
+    'revision_information' => '51',
+    'author' => '50',
+    'options' => '52',
+    'comment_settings' => '53',
+    'menu' => '46',
+    'book' => '49',
+    'attachments' => '54',
+    'og_nodeapi' => '47',
   );
   $export['content_extra_weights_shub_sensor_reading'] = $strongarm;
 

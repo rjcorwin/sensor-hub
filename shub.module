@@ -71,45 +71,6 @@ function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   }
 }
 
-/*
- * hook_cron
- */
-function shub_cron() {
-  // Get all Sensor Server Data nodes that are not marked as 'processed'
-  $q = " 
-    SELECT node.nid AS nid
-    FROM node node
-    LEFT JOIN content_type_sensor_board_data
-      ON node.vid = content_type_sensor_board_data.vid
-    WHERE ((content_type_sensor_board_data.field_sb_data_process_status_value) = ('not processed'))
-      AND (node.type in ('sensor_board_data'))
-  ";
-  $result = db_query($q, $sensor_server_id);
-  $sensor_board_data_count = 0;
-  $sensor_reading_count = 0;
-  
-  // parse each node
-  while($nid = db_result($result)) {
-    $sensor_board_data = node_load($nid);
-    if($sensor_board = node_load($sensor_board_data->field_sb_data_to_sb[0]['nid'])) {
-      // Parse only if marked to do so on the associated sensor board
-      if ($sensor_board->field_process_on_cron[0]['value'] == "enabled") {
-        $sensor_reading_count += shub_sensor_board_data_process($sensor_board_data);
-        $sensor_board_data_count++;
-      }
-    }
-    else {
-      watchdog('Sensor Hub', "Sensor Board Data with nid of $sensor_board_data->nid does
-              not have an associated Sensor Board");
-    }
-  }
-  
-  // Report activity to Drupal Log
-  watchdog("Sensor Hub", 'On cron job, SHUB ' . ' parsed ' . $sensor_board_data_count
-          . ' Sensor Board Data nodes and created ' . $sensor_reading_count
-          . ' Sensor Readings nodes.');
-}
-
 
 /****************************************************************
  * Sensor Board functions
@@ -284,6 +245,51 @@ function shub_sensor_reading_save($data, $sensor_id, $timestamp, $sensor_board_i
  *
  * hook_load
  */
+
+
+function shub_sensor_board_sensors_load($sensor_board_nid, $reset = FALSE) {
+ 
+  static $cache;
+  $sensors = array();
+ 
+  // Only fetch the sensors nids if they are not already in cache or told to reset
+  if (!$cache[$sensor_board_nid] || $reset) {
+    $result = db_query("SELECT node.nid AS nid 
+            FROM node node  
+            INNER JOIN og_ancestry og_ancestry 
+            ON node.nid = og_ancestry.nid 
+            WHERE (node.type in ('shub_sensor')) 
+            AND (og_ancestry.group_nid = %d)",
+            array( $sensor_board_nid ) );
+    while ($sensor_nid = db_result($result)) {
+      $cache[$sensor_board_nid][] = $sensor_nid;
+    }
+  }
+  // If we have an array of sensor nids, load their nodes and return them.
+  if (is_array($cache[$sensor_board_nid])) {
+    foreach ($cache[$sensor_board_nid] as $key => $sensor_nid) {
+      $sensor = node_load($sensor_nid);
+      $sensors[$sensor->field_sensor_id[0]['value']] = $sensor;
+    }
+    return $sensors;
+  }
+  
+}
+
+function shub_sensor_board_attach_sensor($sensor_board_nid, $sensor_id) {
+  $sensor_board = node_load($sensor_board_nid);
+  $sensor = new stdClass();
+  $sensor->type = 'shub_sensor';
+  $sensor->og_groups = array( $sensor_board_nid => $sensor_board_nid);
+  $sensor->uid = $sensor_board->uid;
+  // give the Sensor Reading a title
+  $sensor->title = $sensor_id;
+  $sensor->field_sensor_id = array( array('value'=>$sensor_id) );
+  // save the new Sensor Reading
+  node_save($sensor); 
+
+}
+
 
 /*
  * hook_load for Sensor nodes

@@ -1,3 +1,0 @@
-<?php
-
-include_once('shub_sensor_reading.features.inc');

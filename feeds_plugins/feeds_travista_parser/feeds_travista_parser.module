@@ -1,0 +1,18 @@
+<?php
+
+function feeds_travista_parser_feeds_plugins() {
+  $path = drupal_get_path('module', 'feeds_travista_parser');
+
+  $info = array();
+  $info['FeedsTravistaParser'] = array(
+    'name' => 'Travista Parser',
+    'description' => 'Parses a Sensor Board data string in Travista format.',
+    'handler' => array(
+      'parent' => 'FeedsParser',
+      'class' => 'FeedsTravistaParser',
+      'file' => 'FeedsTravistaParser.inc',
+      'path' => $path,
+    ),
+  );
+  return $info;
+}

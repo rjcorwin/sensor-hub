@@ -1,0 +1,18 @@
+<?php
+
+function feeds_atrium_reader_data_fetcher_feeds_plugins() {
+  $path = drupal_get_path('module', 'feeds_atrium_reader_data_fetcher');
+
+  $info = array();
+  $info['FeedsAtriumReaderDataFetcher'] = array(
+    'name' => 'Atrium Reader Data Fetcher',
+    'description' => 'Fetches data from the Atrium Reader Feature.',
+    'handler' => array(
+      'parent' => 'FeedsFetcher',
+      'class' => 'FeedsAtriumReaderDataFetcher',
+      'file' => 'FeedsAtriumReaderDataFetcher.inc',
+      'path' => $path,
+    ),
+  );
+  return $info;
+}

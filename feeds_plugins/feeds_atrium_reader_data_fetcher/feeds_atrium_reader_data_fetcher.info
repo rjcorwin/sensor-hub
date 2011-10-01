@@ -1,0 +1,8 @@
+name = Atrium Reader Data Fetcher for Feeds
+description = Enables Feeds to Fetch a data from an RSS feed from the Atrium Reader.
+package = Feeds
+dependencies[] = ctools
+dependencies[] = feeds 
+dependencies[] = views
+dependencies[] = atrium_reader
+core = 6.x
