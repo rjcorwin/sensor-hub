@@ -1,101 +1,6 @@
 <?php
 
 /*
- * Sensor Hub module
- * 
- * TODO Permissions
- * 
- */
-
-include_once('shub.features.inc');
-
-/**
- * Implementation of hook_feeds_plugins().
- */
-function shub_feeds_plugins() {
-  $info = array();
-  $info['FeedsSensorBoardDataTravistaParser'] = array(
-    'name' => 'Sensor Board Data in Travista format Parser',
-    'description' => 'Parses data in the Travista format.',
-    'handler' => array(
-      'parent' => 'FeedsParser', // A plugin needs to derive either directly or indirectly from FeedsFetcher, FeedsParser or FeedsProcessor.
-      'class' => 'FeedsSensorBoardDataTravistaParser',
-      'file' => 'FeedsSensorBoardDataTravistaParser.inc',
-      'path' => drupal_get_path('module', 'shub') . "/feeds_plugins",
-    ),
-  );
-  $info['FeedsSensorBoardDataOnSensorBoardFetcher'] = array(
-    'name' => 'Sensor Board Data On Sensor Board Fetcher',
-    'description' => 'Fetches all unprocessed Sensor Board Data',
-    'handler' => array(
-      'parent' => 'FeedsFetcher', // A plugin needs to derive either directly or indirectly from FeedsFetcher, FeedsParser or FeedsProcessor.
-      'class' => 'FeedsSensorBoardDataOnSensorBoardFetcher',
-      'file' => 'FeedsSensorBoardDataOnSensorBoardFetcher.inc',
-      'path' => drupal_get_path('module', 'shub') . "/feeds_plugins",
-    ),
-  );
-  return $info;
-}
-
-/*
- * hook_nodeapi()
- * TODO Currently the node hooks for our custom content types are not being
- * called when we set the content type declartions' module parameter correctly
- * so we're forced to call them in hook_nodeapi().  This may be because of our
- * tie to the Features module.  When doing a features-update on shub it will
- * overwrite the content types' module parameters.
- */
-function shub_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
-  switch ($op) {
-    case 'insert':
-      if($node->type == "sensor_board_data") {
-        shub_sensor_board_data_insert($node);
-      }
-      break;
-    case 'view' :
-      if($node->type == 'sensor_board_data') {
-        shub_sensor_board_data_view($node, $teaser = FALSE, $page = FALSE);
-      }
-      if($node->type == 'sensor_board') {
-        shub_sensor_board_view($node, $teaser = FALSE, $page = FALSE);
-      }
-      break;
-    case 'load':
-      if($node->type == 'sensor_board') {
-        shub_sensor_board_load($node);
-      }
-      if($node->type == 'sensor') {
-        shub_sensor_load($node);
-      }
-      break;
-  }
-}
-
-
-/****************************************************************
- * Sensor Board functions
- *
- * hook_load, hook_view, load_by_id, hook_validate, sensors_attached
- */
-
-/*
- * hook_load() for Sensor Boards
- */
-function shub_sensor_board_load($node) {
-  $node->id = $node->field_sb_id[0]['value'];
-  // Attach function required because relationships maintained in CCK are saved by assigning
-  // Sensor node to Sensor Board node. Is there contrib that reverse lookup and attach for us?
-  $node->sensors = shub_sensor_board_get_sensors($node->nid);
-}
-
-/*
- * hook_view() for Sensor Boards
- */
-function shub_sensor_board_view($node, $teaser = FALSE, $page = FALSE) {
-
-}
-
-/*
  * Sensor Board Load By ID: Load a Sensor Board node using the Sensor Board's ID
  */
 function shub_sensor_board_load_by_id($sensor_board_id) {
@@ -115,18 +20,8 @@ function shub_sensor_board_load_by_id($sensor_board_id) {
     return node_load($sensor_board_nid);
   }
   else {
-    drupal_set_message("Could nokskt find Sensor Board with ID {$sensor_board_id}");
+    drupal_set_message("Could not find Sensor Board with ID {$sensor_board_id}");
   }
-}
-
-/*
- * Sensor Board Validate
- * hook_validate()
- *
- * TODO Validate Sensor Board node form, field_sb_id should be unique.
- */
-function shub_sensor_board_validate($node, &$form) {
-  
 }
 
 /*
@@ -153,91 +48,6 @@ function shub_sensor_board_get_sensors($nid = NULL, $id = NULL) {
     $sensors[$sensor->id] = $sensor;
   }
   return $sensors;
-}
-
-/****************************************************************
- * Sensor Board Data functions
- *
- * hook_insert, hook_view
- */
-
-function shub_sensor_board_data_insert($node) {
-  // Catch Sensor Board Data nodes being imported by mail handler.
-  if (!$node->field_sb_data_to_sb[0]['nid']) {
-    // Get the Sensor Board node
-    // Check for DATE in string, in which case we look for a comma to
-    // find the ID.  This is obviously ugly :P and will be fixed when
-    // we have a Feeds integration and parsing plugin is configurable per 
-    // sensor board.
-    if(!$has_date = strpos($node->body, 'DATE')) { 
-      $pos  = strpos($node->body, ' ');
-    }
-    else {
-      $pos  = strpos($node->body, ',');
-    }
-    $sensor_board_id   = substr($node->body, 0, $pos);
-    dpm($sensor_board_id);
-    if($sensor_board = shub_sensor_board_load_by_id($sensor_board_id)) {
-      $node->field_sb_data_to_sb[0]['nid'] = $sensor_board->nid;
-    }
-    else {
-      // TODO Alert the user they have Sensor Board Data being imported with no
-      // Parent Sensor Board.  This may be triggered on CRON so using drupal_set_message()
-      // is not appropriate.  Using watchdog() assumes user has admin access. Email the user?
-    } 
-  }
-  if ($node->field_sb_data_process_status[0]['value'] == NULL) {
-    // Mailhandler saves field_sb_data_process as NULL. Set to 'not processed'.
-    $node->field_sb_data_process_status = array( 0 => array( 'value' => 'not processed'));
-  }
-  node_save($node);
-}
-
-/*
- * hook_node_view
- */
-function shub_sensor_board_data_view($node, $teaser = FALSE, $page = FALSE) {
-  // Add the "Process this Sensor Board Data" link
-  if($node->field_sb_data_process_status[0]['value'] == 'not processed') {
-    $path =  ltrim(request_uri(), '/');
-    $link = l(t('Process this Sensor Board Data'), $path,
-      array('query' => array('sensor_board_data_process' => $node->nid)));
-    $node->content['sensor_board_data_process_link'] = array(
-       '#value' => $link,
-       '#weight' => -2
-    );
-  }
-}
-
-/****************************************************************
- * Sensor Reading functions
- *
- * save
- */
-
-/*
- * Save a Sensor Reading node
- */
-function shub_sensor_reading_save($data, $sensor_id, $timestamp, $sensor_board_id) {
-  // create a new node object to save sensor reading data into
-  $sensor_board = shub_sensor_board_load_by_id($sensor_board_id);
-  $sensor_reading = new stdClass();
-  $sensor_reading->type = 'sensor_reading';
-  // form the relationship from the sensor reading node to the sensor node
-  $sensor_reading->field_sensor_reading_to_sensor = array( 0 => array( 'nid' => $sensor_board->sensors[$sensor_id]->nid));
-  // form the relationship from the sensor reading node to the sensor board node
-  $sensor_reading->field_sensor_reading_to_sb = array( 0 => array( 'nid' => $sensor_board->nid));
-  // save the sensor data from the Sensor Server Data
-  $sensor_reading->body = $data;
-  $sensor_reading->created = $timestamp;
-  // set the owner
-  $sensor_reading->uid = $sensor_board->uid;
-  // give the Sensor Reading a title
-  $sensor_reading->title = $sensor_board->id . ":" . $sensor_board->sensor[$sensor_id]->title . ":"
-    . $timestamp . ':' . $data;// . $sensor_reading->
-  // save the new Sensor Reading
-  node_save($sensor_reading); 
-
 }
 
 /****************************************************************
@@ -288,14 +98,6 @@ function shub_sensor_board_attach_sensor($sensor_board_nid, $sensor_id) {
   // save the new Sensor Reading
   node_save($sensor); 
 
-}
-
-
-/*
- * hook_load for Sensor nodes
- */
-function shub_sensor_load($node) {
-  $node->id = $node->field_sensor_id[0]['value'];
 }
 
 /*
