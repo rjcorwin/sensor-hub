@@ -3,3 +3,13 @@ description = "Sensor Hub is a module that helps with aggregating sensor data an
 name = "Sensor Hub"
 package = "Sensor Hub"
 project = "shub"
+dependencies[] = "shub_sensor"
+dependencies[] = "shub_sensor_board"
+dependencies[] = "shub_sensor_reading"
+dependencies[] = "shub_sensor_hub_groups_public"
+dependencies[] = "shub_sensor_boards_directory"
+dependencies[] = "shub_sensor_directory"
+dependencies[] = "shub_sensor_reading_directory"
+dependencies[] = "shub_sensor_reading_graph"
+dependencies[] = "feeds_travista_parser"
+
