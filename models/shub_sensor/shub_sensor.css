@@ -4,7 +4,7 @@
 #features-menu li a.icon-sensors span.icon { background:url(images/icon.png) no-repeat; }
 
 /* 'body' is here simply to make this more specific than the theme rule which comes after it. */
-body li.shub-sensor span { background:url(images/icon.png) 0px -40px no-repeat; }
+body span.feature-shub_sensor { background:url(images/icon.png) 0px -40px no-repeat; }
 
 /**
  * News tab ===========================================================
