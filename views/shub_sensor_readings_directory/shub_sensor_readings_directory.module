@@ -1,0 +1,13 @@
+<?php
+
+include_once('shub_sensor_readings_directory.features.inc');
+
+
+/**
+ * Implementation of hook_init().
+ */
+function shub_sensor_readings_directory_init() {
+  drupal_add_css(drupal_get_path('module', 'shub_sensor_readings_directory') .'/shub_sensor_readings_directory.css');
+}
+
+
