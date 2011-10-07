@@ -1,0 +1,3 @@
+<?php
+
+include_once('shub_sensor_readings_graph.features.inc');
