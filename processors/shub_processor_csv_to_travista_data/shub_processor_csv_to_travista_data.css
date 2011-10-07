@@ -1,10 +1,9 @@
 /**
  * Menu icon ==========================================================
  */
-#features-menu li a.icon-sensor-readings span.icon { background:url(images/icon.png) no-repeat; }
 
 /* 'body' is here simply to make this more specific than the theme rule which comes after it. */
-body span.feature-shub_sensor_reading { background:url(images/icon.png) 0px -40px no-repeat; }
+body span.feature-shub_processor_csv_to_travista_data { background:url(images/icon.png) 0px -40px no-repeat; }
 
 /**
  * News tab ===========================================================

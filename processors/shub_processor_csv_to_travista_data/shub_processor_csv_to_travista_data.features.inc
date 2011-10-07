@@ -3,7 +3,7 @@
 /**
  * Implementation of hook_ctools_plugin_api().
  */
-function shub_sensor_reading_ctools_plugin_api() {
+function shub_processor_csv_to_travista_data_ctools_plugin_api() {
   list($module, $api) = func_get_args();
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => 1);
@@ -13,10 +13,10 @@ function shub_sensor_reading_ctools_plugin_api() {
 /**
  * Implementation of hook_node_info().
  */
-function shub_sensor_reading_node_info() {
+function shub_processor_csv_to_travista_data_node_info() {
   $items = array(
-    'shub_sensor_reading' => array(
-      'name' => t('Sensor Reading'),
+    'shub_processor_csv_to_travista' => array(
+      'name' => t('CSV File to Travista Data Processor'),
       'module' => 'features',
       'description' => '',
       'has_title' => '1',

@@ -1,0 +1,7 @@
+core = "6.x"
+dependencies[] = "data"
+description = "Data table for Sensor Readings."
+features[ctools][] = "data:data_default:1"
+features[data_tables][] = "shub_sensor_readings"
+name = "shub Sensor Readings"
+package = "Features"
