@@ -1,3 +1,9 @@
 <?php
 
 include_once('shub_sensor_boards_directory.features.inc');
+
+function shub_sensor_boards_directory_init() {
+  drupal_add_css(drupal_get_path('module', 'shub_sensor_boards_directory') .'/shub_sensor_boards_directory.css');
+}
+
+

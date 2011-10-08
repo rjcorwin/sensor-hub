@@ -1,3 +1,9 @@
 <?php
 
 include_once('shub_sensor_readings_graph.features.inc');
+
+function shub_sensor_readings_graph_init() {
+  drupal_add_css(drupal_get_path('module', 'shub_sensor_readings_graph') .'/shub_sensor_readings_graph.css');
+}
+
+
