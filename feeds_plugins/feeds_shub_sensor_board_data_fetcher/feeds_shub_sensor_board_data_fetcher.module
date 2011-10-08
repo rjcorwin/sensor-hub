@@ -1,0 +1,20 @@
+<?php
+
+include_once('feeds_shub_sensor_board_data_fetcher.features.inc');
+
+function feeds_shub_sensor_board_data_fetcher_feeds_plugins() {
+  $path = drupal_get_path('module', 'feeds_shub_sensor_board_data_fetcher');
+
+  $info = array();
+  $info['FeedsShubSensorBoardDataFetcher'] = array(
+    'name' => 'Sensor Board Data Fetcher',
+    'description' => 'Fetches data from the shub_sensor_board_data table.',
+    'handler' => array(
+      'parent' => 'FeedsFetcher',
+      'class' => 'FeedsShubSensorBoardDataFetcher',
+      'file' => 'FeedsShubSensorBoardDataFetcher.inc',
+      'path' => $path,
+    ),
+  );
+  return $info;
+}

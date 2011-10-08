@@ -1,0 +1,3 @@
+<?php
+
+include_once('shub_travista_adapter.features.inc');

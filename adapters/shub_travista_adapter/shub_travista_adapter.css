@@ -1,0 +1,7 @@
+/**
+ * Menu icon ==========================================================
+ */
+
+/* 'body' is here simply to make this more specific than the theme rule which comes after it. */
+body span.feature-shub_travista_parser { background:url(images/icon.png) 0px -40px no-repeat; }
+

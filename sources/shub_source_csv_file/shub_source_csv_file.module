@@ -1,0 +1,3 @@
+<?php
+
+include_once('shub_source_csv_file.features.inc');
