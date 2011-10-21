@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * Implementation of hook_install().
+ */
+function shub_sensor_board_data_install() {
+  drupal_install_schema('shub_sensor_board_data');
+}
+
+/**
+ * Implementation of hook_uninstall();
+ */
+function shub_sensor_board_data_uninstall() {
+  drupal_uninstall_schema('shub_sensor_board_data');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function shub_sensor_board_data_schema() {
+  // Install data tables.
+  include_once('shub_sensor_board_data.data_default.inc');
+  $tables = shub_sensor_board_data_data_default();
+  $schema = array();
+  foreach ($tables as $name => $table) {
+    $schema[$name] = $table->table_schema;
+  }
+  return $schema;
+}
