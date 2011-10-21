@@ -1,0 +1,3 @@
+<?php
+
+include_once('shub_sensor_board_data_directory.features.inc');
