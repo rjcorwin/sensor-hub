@@ -16,5 +16,6 @@ dependencies[] = "shub_sensor_readings_graph"
 dependencies[] = "feeds_travista_parser"
 dependencies[] = "feeds_shub_sensor_board_data_fetcher"
 dependencies[] = "shub_travista_adapter"
+dependencies[] = "shub_source_csv_file"
 
 
