@@ -214,9 +214,9 @@ function feeds_shub_sensor_board_data_fetcher_views_default_views() {
       'relationship' => 'feed_nid',
     ),
     'status' => array(
-      'operator' => '=',
+      'operator' => 'empty',
       'value' => array(
-        'value' => '0',
+        'value' => '',
         'min' => '',
         'max' => '',
       ),
