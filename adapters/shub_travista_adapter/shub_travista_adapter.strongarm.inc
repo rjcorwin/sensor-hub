@@ -82,6 +82,13 @@ function shub_travista_adapter_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'og_content_type_usage_shub_travista_data_adapter';
+  $strongarm->value = 'group_post_wiki';
+  $export['og_content_type_usage_shub_travista_data_adapter'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'upload_shub_travista_data_adapter';
   $strongarm->value = '1';
   $export['upload_shub_travista_data_adapter'] = $strongarm;
