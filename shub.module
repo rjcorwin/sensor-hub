@@ -56,14 +56,17 @@ function shub_sensor_board_get_sensors($nid = NULL, $id = NULL) {
  * hook_load
  */
 
-
+/*
+ *
+ * @todo Fix the caching here
+ */
 function shub_sensor_board_sensors_load($sensor_board_nid, $reset = FALSE) {
  
-  static $cache;
+  // static $cache;
   $sensors = array();
  
   // Only fetch the sensors nids if they are not already in cache or told to reset
-  if (!$cache[$sensor_board_nid] || $reset) {
+  // if (!$cache[$sensor_board_nid] || $reset) {
     $result = db_query("SELECT node.nid AS nid 
             FROM node node  
             INNER JOIN og_ancestry og_ancestry 
@@ -72,17 +75,23 @@ function shub_sensor_board_sensors_load($sensor_board_nid, $reset = FALSE) {
             AND (og_ancestry.group_nid = %d)",
             array( $sensor_board_nid ) );
     while ($sensor_nid = db_result($result)) {
-      $cache[$sensor_board_nid][] = $sensor_nid;
+      $sensor = node_load($sensor_nid);
+      $sensors[$sensor->field_sensor_id[0]['value']] = $sensor;
     }
-  }
+  // }
   // If we have an array of sensor nids, load their nodes and return them.
-  if (is_array($cache[$sensor_board_nid])) {
+  /*
+   if (is_array($cache[$sensor_board_nid])) {
+   
     foreach ($cache[$sensor_board_nid] as $key => $sensor_nid) {
       $sensor = node_load($sensor_nid);
       $sensors[$sensor->field_sensor_id[0]['value']] = $sensor;
     }
     return $sensors;
-  }
+  } 
+   * 
+   */
+  return $sensors;
   
 }
 

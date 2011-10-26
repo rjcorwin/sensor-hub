@@ -36,22 +36,17 @@ class FeedsTravistaParser extends FeedsParser {
    *  
    */
   public function parseSensorBoardData($sensor_board_data) {
-    // Data may be from an RSS feed
-    $string = strip_tags($sensor_board_data->feeds_data_feed_reader_description);
-    if ($string != $sensor_board_data->feeds_data_feed_reader_description) {
-      $has_markup = TRUE;
-      $string = rtrim(substr($string, 0, strpos($string, "Processing Status")-1));
-    }
+    $data_string = $sensor_board_data['data'];
     // Make sure this is the format we support or else skip Sensor Board Data node
-    if(!$pos = strpos($string, 'DATE')) {
+    if(!$pos = strpos($data_string, 'DATE')) {
       drupal_set_message("Reason: The data in the Sensor Board Data does not have the DATE 
-        identifier: $string");
+        identifier: " . $data_string);
       return;
     }
-    
+     
     // Get the date and time from the reading
-    $date  = substr($string, $pos+5, 10);
-    $time  = substr($string, $pos+16, 8);
+    $date  = substr($data_string, $pos+5, 10);
+    $time  = substr($data_string, $pos+16, 8);
     $date = explode("/", $date);
     $time = explode(":", $time);
     
@@ -70,24 +65,20 @@ class FeedsTravistaParser extends FeedsParser {
     // Make sure we have a timestamp or else skip Sensor Board Data node
     if(!$data['timestamp']) {
       drupal_set_message("Reason: Cannot find the date/time in the Sensor Board Data 
-        node data: $string");
+        node data: " . $data_string);
       return;
     }
     
     // Parse out the sensor readings
     $pos = $pos + 25;
-    $sensor_readings_string  = substr($string , $pos, strlen($string));
+    $sensor_readings_string  = substr($data_string, $pos, strlen($data_string));
     $data['sensor_reading_strings'] = explode(',', $sensor_readings_string);
     
     // If this is not an array skip the Sensor Board Data node
     if(!is_array($data['sensor_reading_strings'])) {
       drupal_set_message("Reason: The data in the Sensor Board Data does not appear to be comma 
-        delimited correctly: $string");
+        delimited correctly: " . $data_string);
       return;
-    }
-    
-    if($has_markup) {
-      // TODO remove cruft on last
     }
     
     return $data;
@@ -101,12 +92,13 @@ class FeedsTravistaParser extends FeedsParser {
     
     $sensor_board = og_get_group_context();
     $sensors = shub_sensor_board_sensors_load($sensor_board->nid);
+    $sensor_ids = array();
     
     foreach ($sensors as $sensor) {
       $sensor_ids[] = $sensor->field_sensor_id[0]['value'];
     }
     
-    foreach($sensor_board_data['sensor_reading_strings'] as $key => $sensor_string) {
+    foreach($sensor_board_data['sensor_reading_strings'] as  $sensor_string) {
       
       $arr = explode(':', $sensor_string);
       

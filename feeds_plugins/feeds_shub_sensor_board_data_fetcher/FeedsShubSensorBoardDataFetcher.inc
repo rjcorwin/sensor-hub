@@ -28,16 +28,21 @@ class FeedsShubSensorBoardDataBatch extends FeedsImportBatch {
    * Implementation of FeedsImportBatch::getRaw();
    */
   public function getRaw() {
-    // @todo check for error in views, throw exception if there is error.
-    // @todo delete this, because this functionality will be implemented in the parser.
-    
-    //if (!isset($this->raw)) {
     if (!is_array($this->raw)) {
-    
-    // Tokenize the options
-      $this->raw = views_get_view_result($this->view_name, $this->display_id);
+      $results = views_get_view_result($this->view_name, $this->display_id);
+      foreach ($results as $result) {
+        // Standardize the data structure so parsers don't choke
+        // @todo I'm not sure if there is a use case for passing along the full $result - rjstatic
+        $this->raw[] = array(
+            'data' => $result->shub_sensor_board_data_data
+        );
+        // Mark this data row as fetched so we don't fetch it again
+        // @todo Fetched status could reside in a seperate table with a unique key using the feed_importer's 
+        // unique ID in case multiple importers want to process the data... This seems like better design
+        // but I'm not certain we really need it.  
+        db_query('update shub_sensor_board_data SET status=1 WHERE id=%d', $result->id);
+      }
     }
-    
     return $this->raw;
   }
   
