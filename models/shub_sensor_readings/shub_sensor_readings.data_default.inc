@@ -109,6 +109,13 @@ function shub_sensor_readings_data_default() {
       'content_type' => 'shub_sensor',
       'id' => 'sensor_nid',
     ),
+    'join' => array(
+      'node' => array(
+        'left_field' => 'nid',
+        'field' => 'sensor_nid',
+        'inner_join' => '0',
+      ),
+    ),
   );
   $export['shub_sensor_readings'] = $data_table;
 
