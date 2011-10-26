@@ -86,8 +86,8 @@ function shub_sensor_readings_graph_views_default_views() {
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'date_format' => 'large',
-      'custom_date_format' => '',
+      'date_format' => 'custom',
+      'custom_date_format' => 'U',
       'reldate' => '0',
       'exclude' => 0,
       'id' => 'timestamp',
@@ -179,6 +179,96 @@ function shub_sensor_readings_graph_views_default_views() {
     ),
   ));
   $handler->override_option('filters', array(
+    'data_2' => array(
+      'operator' => '<=',
+      'value' => array(
+        'value' => '',
+        'min' => '',
+        'max' => '',
+      ),
+      'group' => '0',
+      'exposed' => TRUE,
+      'expose' => array(
+        'use_operator' => 0,
+        'operator' => 'data_2_op',
+        'identifier' => 'data_2',
+        'label' => 'Max',
+        'optional' => 1,
+        'remember' => 0,
+      ),
+      'id' => 'data_2',
+      'table' => 'shub_sensor_readings',
+      'field' => 'data',
+      'relationship' => 'none',
+    ),
+    'data_1' => array(
+      'operator' => '>=',
+      'value' => array(
+        'value' => '',
+        'min' => '',
+        'max' => '',
+      ),
+      'group' => '0',
+      'exposed' => TRUE,
+      'expose' => array(
+        'use_operator' => 0,
+        'operator' => 'data_1_op',
+        'identifier' => 'data_1',
+        'label' => 'Min',
+        'optional' => 1,
+        'remember' => 0,
+      ),
+      'id' => 'data_1',
+      'table' => 'shub_sensor_readings',
+      'field' => 'data',
+      'relationship' => 'none',
+    ),
+    'timestamp' => array(
+      'operator' => '<',
+      'value' => array(
+        'type' => 'date',
+        'value' => '',
+        'min' => '',
+        'max' => '',
+      ),
+      'group' => '0',
+      'exposed' => TRUE,
+      'expose' => array(
+        'use_operator' => 0,
+        'operator' => 'timestamp_op',
+        'identifier' => 'timestamp',
+        'label' => 'Before',
+        'optional' => 1,
+        'remember' => 0,
+      ),
+      'id' => 'timestamp',
+      'table' => 'shub_sensor_readings',
+      'field' => 'timestamp',
+      'relationship' => 'none',
+    ),
+    'timestamp_1' => array(
+      'operator' => '>',
+      'value' => array(
+        'type' => 'date',
+        'value' => '',
+        'min' => '',
+        'max' => '',
+      ),
+      'group' => '0',
+      'exposed' => TRUE,
+      'expose' => array(
+        'use_operator' => 0,
+        'operator' => 'timestamp_1_op',
+        'identifier' => 'timestamp_1',
+        'label' => 'After',
+        'optional' => 1,
+        'remember' => 0,
+      ),
+      'id' => 'timestamp_1',
+      'table' => 'shub_sensor_readings',
+      'field' => 'timestamp',
+      'relationship' => 'none',
+    ),
     'current' => array(
       'operator' => '=',
       'value' => '',
@@ -193,6 +283,28 @@ function shub_sensor_readings_graph_views_default_views() {
       'field' => 'current',
       'relationship' => 'sensor_nid',
     ),
+    'sensor_nid' => array(
+      'operator' => '=',
+      'value' => array(
+        'value' => '',
+        'min' => '',
+        'max' => '',
+      ),
+      'group' => '0',
+      'exposed' => TRUE,
+      'expose' => array(
+        'use_operator' => 0,
+        'operator' => 'sensor_nid_op',
+        'identifier' => 'sensor_nid',
+        'label' => 'Sensor NID',
+        'optional' => 1,
+        'remember' => 0,
+      ),
+      'id' => 'sensor_nid',
+      'table' => 'shub_sensor_readings',
+      'field' => 'sensor_nid',
+      'relationship' => 'sensor_nid',
+    ),
   ));
   $handler->override_option('access', array(
     'type' => 'spaces_feature',
@@ -202,6 +314,8 @@ function shub_sensor_readings_graph_views_default_views() {
   $handler->override_option('cache', array(
     'type' => 'none',
   ));
+  $handler->override_option('items_per_page', 1000);
+  $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'charts');
   $handler->override_option('style_options', array(
     'grouping' => 'title',
@@ -209,9 +323,9 @@ function shub_sensor_readings_graph_views_default_views() {
       'data' => 'data',
       'timestamp' => 'timestamp',
     ),
-    'views_charts_x_labels' => 'data',
-    'width' => '400',
-    'height' => '350',
+    'views_charts_x_labels' => 'timestamp',
+    'width' => '525px',
+    'height' => '400px',
     'engine' => 'flot',
     'type' => array(
       'flot' => 'line',
@@ -224,6 +338,7 @@ function shub_sensor_readings_graph_views_default_views() {
     'background_colour' => '',
     'series_colours' => '',
   ));
+  $handler->override_option('exposed_block', TRUE);
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->override_option('path', 'graph');
   $handler->override_option('menu', array(
